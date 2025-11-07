@@ -98,5 +98,9 @@ public class First1 {
         System.out.println("Hello \\java\\ World!"); // Escape backslash in a string using double backslash it is a special character in Java that allows you to include a single backslashes in strings
         System.out.println("Hello \njava\nWorld!"); // Escape newline in a string using \n it is a special character in Java that allows you to include new lines in strings
         System.out.println("Hello \tjava\tWorld!"); // Escape tab in a string using \t it is a special character in Java that allows you to include tabs in strings
+
+        // Constants
+        final float PI = 3.1416F; // final declares the PI as a constant and it cannot be changed
+        System.out.println("Value of PI: " + PI);
     }
 }
