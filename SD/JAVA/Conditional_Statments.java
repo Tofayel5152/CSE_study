@@ -9,6 +9,10 @@ public class Conditional_Statments {
             System.out.println(number + " is an odd number.");
         }
 
+        // Simplyfied If Statement
+        boolean isEven = (number % 2 == 0);
+        System.out.println("Is the " + number + " even? " + isEven);
+
         // If-Else If Ladder
         int score = 85;
         if (score >= 90) {
@@ -64,5 +68,33 @@ public class Conditional_Statments {
                 dayName = "Invalid day";
         }
         System.out.println("Day " + day + " is " + dayName + ".");
+
+        String Day = "Tuesday";
+        switch (Day) {
+            case "Monday":
+                System.out.println("It's Monday!");
+                break;
+            case "Tuesday":
+                System.out.println("It's Tuesday!");
+                break;
+            case "Wednesday":
+                System.out.println("It's Wednesday!");
+                break;
+            case "Thursday":
+                System.out.println("It's Thursday!");
+                break;
+            case "Friday":
+                System.out.println("It's Friday!");
+                break;
+            case "Saturday":
+                System.out.println("It's Saturday!");
+                break;
+            case "Sunday":
+                System.out.println("It's Sunday!");
+                break;
+            default:
+                System.out.println("Invalid day");
+        }
+
     }
 }
