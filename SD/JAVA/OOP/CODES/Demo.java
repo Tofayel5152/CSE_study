@@ -38,7 +38,12 @@ public class Demo {
         B obj3 = new B();
 
         System.out.println("Marks: " + obj3.marks); // Get accessed cz B.java is the same package.
+        // obj3.mark = 50; Can't get access cz it't private.
         // System.out.println(obj3.mark); Can't get access cz it't private.
+
+            // But by setter & getter method we declared in B.java we can get access through those
+            obj3.setMark(50);
+            System.out.println("Mark: " + obj3.getMark());
 
     }
 }
