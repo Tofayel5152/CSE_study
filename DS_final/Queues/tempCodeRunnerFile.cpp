@@ -1,1 +1,0 @@
-cout << "Front element after popping all elements: " << q.front() << endl; // Queue is empty!
