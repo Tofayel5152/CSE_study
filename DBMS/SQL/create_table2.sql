@@ -1,0 +1,10 @@
+USE mysql1;
+
+CREATE TABLE teacher (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    gender ENUM('MALE', 'FEMALE'),
+    dob DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
