@@ -1,53 +1,41 @@
 #include <stdio.h> 
- 
+
+int fact(int n){
+    if(n <= 1){
+        return 1; 
+    }
+    else {
+        return n * fact(n-1);
+    }
+}
+
 int main() { 
-    int marks; 
-    char grade; 
-     
-    printf("Enter marks (0-100): "); 
-    scanf("%d", &marks); 
-     
-    // Method 1: Using if-else 
-    printf("\nMethod 1: Using if-else\n"); 
-    if(marks >= 90) { 
-        grade = 'A'; 
-    } else if(marks >= 80) { 
-        grade = 'B'; 
-    } else if(marks >= 70) { 
-        grade = 'C'; 
-    } else if(marks >= 60) { 
-        grade = 'D'; 
-    } else if(marks >= 50) { 
-        grade = 'E'; 
-    } else { 
-        grade = 'F'; 
-    } 
-    printf("Grade: %c\n", grade); 
-     
-    // Method 2: Using switch-case 
-    printf("\nMethod 2: Using switch-case\n"); 
-    switch(marks / 10) { 
-        case 10: 
-        case 9: 
-            printf("Grade: A\n"); 
-            break; 
-        case 8: 
-            printf("Grade: B\n"); 
-            break; 
-        case 7: 
-            printf("Grade: C\n"); 
-            break; 
-        case 6: 
-            printf("Grade: D\n"); 
-            break; 
-        case 5: 
-            printf("Grade: E\n"); 
+    int num; 
+    long long int factorial = 1; 
+    
+    printf("Enter a number: "); 
+    scanf("%d", &num); 
+    
+    
+    // if(num < 0) { 
+    //     printf("Factorial not defined for negative numbers\n"); 
+    // } else { 
+    //     for(int i = num; i >= 1; i--) { // for(int i = 1; i <= num; i++)
+    //         factorial *= i; 
+    //     } 
+    //     printf("Factorial of %d = %llu\n", num, factorial); 
+    // } 
 
+    // factorial = fact(num);
 
-            break; 
-        default: 
-            printf("Grade: F\n"); 
-    } 
-     
+    printf("Factorial: %d", fact(num));
+
     return 0; 
 } 
+
+/*
+    Recurrence => 
+    f(n) = n * f(n-1)
+    f(1) = 1. stop!
+
+*/
