@@ -42,7 +42,7 @@ int main() {
     }
     
     cout << "Selected items (weight, value): " << endl;
-    for (int i = 0; i < A.size(); i++) {
+    for (int i = 0; i <= A.size(); i++) {
         cout << A[i].weight << " " << A[i].value << endl;
     }
 
