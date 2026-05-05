@@ -31,6 +31,7 @@ int main() {
 
     int take = 1;
     int lastEnd = items[0].end;
+    A.push_back({items[0].weight, items[0].value});
 
     for (int i = 1; i < n; i++) {
         if (items[i].start >= lastEnd) {
@@ -42,7 +43,7 @@ int main() {
     }
     
     cout << "Selected items (weight, value): " << endl;
-    for (int i = 0; i <= A.size(); i++) {
+    for (int i = 0; i < A.size(); i++) {
         cout << A[i].weight << " " << A[i].value << endl;
     }
 
