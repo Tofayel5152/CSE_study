@@ -1,0 +1,180 @@
+ A. Dice Combinations
+    Your task is to count the number of ways to construct sum n by throwing a dice one or more times. Each throw produces an outcome between 
+    1 to 6.
+
+    For example, if n = 3, there are 4 ways:
+
+    * 1 + 1 + 1
+    * 1 + 2
+    * 2 + 1
+    * 3
+
+    Input:
+    The only input line has an integer n.
+
+    Output:
+    Print the number of ways modulo 10^9 + 7.
+
+    Constraints
+
+    * 1 ≤ n ≤ 10^6 
+
+    Example:
+    Input	    Output
+    3           4
+
+B. Hex-a-bonacci
+    Given a code (not optimized and might have overflow problems), and necessary inputs, you have to find the output of the code. The code is as follows:
+
+    int a, b, c, d, e, f;
+    int fn(int n) {
+    if (n == 0) return a;
+    if (n == 1) return b;
+    if (n == 2) return c;
+    if (n == 3) return d;
+    if (n == 4) return e;
+    if (n == 5) return f;
+    return fn(n-1) + fn(n-2) + fn(n-3) + fn(n-4) + fn(n-5) + fn(n-6);
+    }
+    int main() {
+    int n, cases;
+    scanf("%d", &cases);
+    for (int caseno = 1; caseno <= cases; ++caseno) {
+        scanf("%d %d %d %d %d %d %d", &a, &b, &c, &d, &e, &f, &n);
+        printf("Case %d: %d\n", caseno, fn(n) % 10000007);
+    }
+    return 0;
+    }
+
+    Input:
+    Input starts with an integer T (≤ 100), denoting the number of test cases. 
+    Each case contains seven integers a, b, c, d, e, f and n. All integers will be non-negative and 0 ≤ n ≤ 10000 and others will fit into 32-bit integers.
+
+    Output:
+    For each case, print the output of the given code. The given code may have integer overflow problem in the compiler, so be careful.
+
+    Sample:
+    Input=> 6
+            0 1 2 3 4 5 20
+            1 2 3 4 5 6 10000
+            3 2 1 5 0 1 9
+            4 12 9 4 5 6 15
+            9 8 7 6 5 4 3
+            3 4 3 2 54 5 4
+    Output=> Case 1: 216339
+            Case 2: 5333347
+            Case 3: 79
+            Case 4: 16636
+            Case 5: 6
+            Case 6: 54
+
+C. Coin Change (I)
+    In a strange shop there are n types of coins of value A1, A2 … An. C1, C2, … Cn denote the number of coins of value A1, A2 … An respectively. 
+    You have to find the number of ways you can make K using the coins.
+
+    For example, suppose there are three coins 1, 2, 5 and we can use coin 1 at most 3 times, coin 2 at most 2 times and coin 5 at most 1 time. Then if K = 5 the possible ways are:
+
+    (1, 1, 1, 2)
+    (1, 2, 2)
+    (5)
+
+    So, 5 can be made in 3 ways.
+
+    Input:
+    Input starts with an integer T (≤ 100), denoting the number of test cases.
+
+    Each case starts with a line containing two integers n (1 ≤ n ≤ 50) and K (1 ≤ K ≤ 1000). The next line contains 2n integers, 
+    denoting A1, A2 … An, C1, C2 … Cn (1 ≤ Ai ≤ 100, 1 ≤ Ci ≤ 20). All Ai will be distinct.
+
+    Output:
+    For each case, print the case number and the number of ways K can be made. The result can be large, so, print the result modulo 100000007.
+
+    Sample:
+    Input:  2                           Output: Case 1: 3
+            3 5                                 Case 2: 9
+            1 2 5 3 2 1
+            4 20
+            1 2 3 4 8 4 2 1
+
+D - Coin Combinations I
+
+    Consider a money system consisting of n coins. Each coin has a positive 
+    integer value. Your task is to calculate the number of distinct ways you 
+    can produce a money sum x using the available coins.
+
+    For example, if the coins are {2, 3, 5} and the desired sum is 9, 
+    there are 8 ways:
+    - 2+2+5
+    - 2+5+2
+    - 5+2+2
+    - 3+3+3
+    - 2+2+2+3
+    - 2+2+3+2
+    - 2+3+2+2
+    - 3+2+2+2
+
+    Input:
+    The first input line has two integers n and x: the number of coins 
+    and the desired sum of money.
+    The second line has n distinct integers c1, c2, ..., cn: 
+    the value of each coin.
+
+    Output:
+    Print one integer: the number of ways modulo 10^9 + 7.
+
+    Constraints:
+    - 1 <= n <= 100
+    - 1 <= x <= 10^6
+    - 1 <= ci <= 10^6
+
+    Example:
+    Input:  3 9
+            2 3 5
+    Output: 8 
+
+E - Coins
+    Problem Statement
+
+    Let N be a positive odd number.
+
+    There are N coins, numbered 1, 2, ..., N. For each i (1 <= i <= N), 
+    when Coin i is tossed, it comes up heads with probability p_i and 
+    tails with probability 1 - p_i.
+
+    Taro has tossed all the N coins. Find the probability of having 
+    more heads than tails.
+
+    Constraints:
+    - N is an odd number.
+    - 1 <= N <= 2999
+    - p_i is a real number and has two decimal places.
+    - 0 < p_i < 1
+
+    Input:
+    N
+    p1 p2 ... pN
+
+    Output:
+    Print the probability of having more heads than tails. The output 
+    is considered correct when the absolute error is not greater than 10^-9.
+
+    Sample 1:
+    Input:
+    3
+    0.30 0.60 0.80
+    Output: 0.612
+
+    Sample 2:
+    Input:
+    1
+    0.50
+    Output: 0.5
+
+    Sample 3:
+    Input:
+    5
+    0.42 0.01 0.42 0.99 0.42
+    Output: 0.3821815872
+
+
+
