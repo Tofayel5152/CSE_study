@@ -6,7 +6,7 @@
         => A virtual base class is a base class that is inherited by multiple derived classes. It ensures that only one instance of the virtual base class is created, 
         even if it is inherited by multiple derived classes.
 
-        • Virtual base classes are used to resolve the diamond problem in multiple inheritance.
+        • Virtual base classes are used to resolve the diamond problem in hybrid inheritance.
         • The virtual keyword is used to declare a virtual base class.
         • When a class inherits from a virtual base class, it must initialize the virtual base class in its constructor.
 
