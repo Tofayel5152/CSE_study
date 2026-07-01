@@ -11,8 +11,8 @@
         • When a class inherits from a virtual base class, it must initialize the virtual base class in its constructor.
 
         Diamond Problem:
-        The diamond problem is a problem that arises in multiple inheritance when two or more classes inherit from the same base class. This can lead to ambiguity 
-        and confusion when trying to access members of the base class.
+        The diamond problem is a problem that arises in hybrid inheritance when two or more classes inherit from the same base class and another class inherits from both. 
+        This can lead to ambiguity and confusion when trying to access members of the base class.
 
 */
 
