@@ -7,7 +7,7 @@
     of giving special meaning to an operator is known as operator overloading.
 
     We can overload all C++ operator except the following:
-        1. Class member access operator (., .* )
+        1. Class member access operator (. , ->)
         2. Scope resolution operator( :: )
         3. Size operator (sizeof)
         4. Conditional operator( ?: )
