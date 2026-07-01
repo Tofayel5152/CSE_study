@@ -55,7 +55,7 @@ int main() {
     Distance d2(20); // Create another Distance object with initial value 20
     cout << "D2: "; d2.display(); // Display initial value of d2's x (should be 20)
 
-    d2 = d2 + 10; // Call the friend function to add 10 to d2's x
+    d2 = d2 + d1; // Call the member function to add d1's x to d2's x
     cout << "D2: "; d2.display(); // Display updated value of d2's x (should be 30)
 
     return 0;
