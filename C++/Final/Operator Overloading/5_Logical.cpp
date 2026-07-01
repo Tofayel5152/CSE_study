@@ -18,26 +18,26 @@ public:
 
     // Overload &&
     bool operator && (Point p) {
-        Point temp;
-        temp.x = x && p.x;
-        temp.y = y && p.y;
-        return temp.x  && temp.y;
+        if ((x && p.x) && (y && p.y))
+            return true;
+        else
+            return false;
     }
 
     // Overload ||
     bool operator || (Point p) {
-        Point temp;
-        temp.x = x || p.x;
-        temp.y = y || p.y;
-        return temp.x || temp.y;
+       if ((x || p.x) || (y || p.y))
+            return true;
+        else
+            return false;
     }
 
     // Overload !
     bool operator ! () {
-        Point temp;
-        temp.x = !x;
-        temp.y = !y;
-        return temp.x && temp.y; // Use the overloaded ! operator to check if both x and y are zero
+        if (!x && !y)
+            return true;
+        else
+            return false; // Return true if both x and y are zero, indicating the point is at the origin(0,0)
     }
 
 };
