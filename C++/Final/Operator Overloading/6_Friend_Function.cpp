@@ -28,26 +28,35 @@ class Distance {
         cout << "Distance: " << x << endl; // Function to display the current value of x
     }
 
+    Distance operator + (Distance d) {
+        Distance temp; // Create a temporary Distance object
+        temp.x = x + d.x; // Function to add a value to x
+        return temp; // Return the new Distance object with the summed value
+    }
+
     // Friend function to add value
-    friend void Add (Distance &d);//prototype of friend function
+    friend Distance operator + (Distance &d, int a);//prototype of friend function
 
 };
 
-void Add (Distance &d) {
-    d.x = d.x + 10; // Adds 10 to the private member x of the Distance object
+Distance operator + (Distance &d, int a) {
+    Distance temp; // Create a temporary Distance object
+    temp.x = d.x + a; // Adds the integer value to the private member x of the Distance object
+    return temp;
 }
+
 int main() {
     Distance d1; // Create a Distance object using the default constructor
-    d1.display(); // Display initial value of d1's x (should be 0)
+    cout << "D1: "; d1.display(); // Display initial value of d1's x (should be 0)
 
-    Add (d1); // Call the friend function to add 10 to d1's x
-    d1.display(); // Display updated value of d1's x (should be 10)
+    d1 = d1 + 10; // Call the friend function to add 10 to d1's x
+    cout << "D1: "; d1.display(); // Display updated value of d1's x (should be 10)
 
     Distance d2(20); // Create another Distance object with initial value 20
-    d2.display(); // Display initial value of d2's x (should be 20)
+    cout << "D2: "; d2.display(); // Display initial value of d2's x (should be 20)
 
-    Add (d2); // Call the friend function to add 10 to d2's x
-    d2.display(); // Display updated value of d2's x (should be 30)
+    d2 = d2 + 10; // Call the friend function to add 10 to d2's x
+    cout << "D2: "; d2.display(); // Display updated value of d2's x (should be 30)
 
     return 0;
 }
