@@ -18,28 +18,26 @@ public:
 
     // Overload ==
     bool operator == (Point p){
-       Point tamp;
-       tamp.x = x == p.x;
-       tamp.y = y == p.y;
-        return (tamp.x && tamp.y);
+        if (x == p.x && y == p.y)
+            return true;
+        else
+            return false;
     }
 
     // Overload <
     bool operator < (Point p){
-
-        Point temp;
-        temp.x = (x + y);
-        temp.y = (p.x + p.y);
-        return temp.x < temp.y;
-
+        if (x < p.x && y < p.y)
+            return true;
+        else
+            return false;
     }
 
     // Overload !=
     bool operator != (Point p){
-        Point temp;
-        temp.x = x != p.x;
-        temp.y = y != p.y;
-        return (temp.x && temp.y); // Use the overloaded != operator to check inequality
+        if (x != p.x || y != p.y)
+            return true;
+        else
+            return false;
     }
 
 };
