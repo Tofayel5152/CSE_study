@@ -51,6 +51,7 @@ int main()
 }
 
 /*
+    * node numbering starts from 1
 Test case:
 5 6
 1 2 4
