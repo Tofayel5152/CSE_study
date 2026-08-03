@@ -106,10 +106,10 @@ All contributions, missing report additions, and corrections are welcome!
 | **University** | International Islamic University Chittagong (IIUC) |
 | **GitHub** | [@Tofayel5152](https://github.com/Tofayel5152) |
 | **Repository** | [CSE_study](https://github.com/Tofayel5152/CSE_study.git) |
-| **Facebook** | [Tofayel Ahmmed](https://facebook.com/) |
+| **Facebook** | [Tofayel Ahmmed](https://www.facebook.com/tofayel.ahmmed512) |
 | **Instagram** | [tofayelahmmedtanvir](https://www.instagram.com/tofayelahmmedtanvir) |
 | **YouTube** | [Tofayel Ahmmed Tanvir](http://www.youtube.com/@tofayelahmmedtanvir512) |
 | **Telegram** | [Tofayel Ahmmed](https://t.me/TofayelAhmmed152) |
-| **LinkedIn** | [Tofayel Ahmmed](https://www.linkedin.com/in/tofayel-ahmmed-15152) |
+| **LinkedIn** | [Tofayel Ahmmed](https://www.linkedin.com/in/tofayel-ahmmed-l5152) |
 
 > **Disclaimer:** This repository is intended strictly for academic reference and self-study purposes. Please adhere to IIUC's honor code and academic integrity guidelines regarding individual lab report and assignment submissions.
