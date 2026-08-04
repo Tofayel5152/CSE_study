@@ -2,7 +2,25 @@
 
 A REST API for a hospital and doctor review platform. Users can browse hospitals, doctors, and medical services, submit ratings and reviews (with optional proof), vote on and report reviews, and save listings for later. Admins moderate reviews and manage core data.
 
-Built with **Node.js**, **Express**, **Prisma**, and **PostgreSQL**.
+Built with **Node.js**, **Express**, **Prisma**, and **PostgreSQL** as a group project for the DBMS course (CSE 2423).
+
+---
+
+## Contents
+
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Data Model](#data-model)
+- [Setup](#setup)
+- [Authentication](#authentication)
+- [API Reference](#api-reference)
+- [Validation](#validation)
+- [Error Handling](#error-handling)
+- [File Uploads](#file-uploads)
+- [Deployment](#deployment)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [License](#license)
 
 ---
 
@@ -23,49 +41,74 @@ Built with **Node.js**, **Express**, **Prisma**, and **PostgreSQL**.
 
 ```
 .
-├── controllers/
-│   ├── authController.js
-│   ├── hospitalController.js
-│   ├── doctorController.js
-│   ├── doctorAffiliationController.js
-│   ├── specialtyController.js
-│   ├── medicalServiceController.js
-│   ├── reviewController.js
-│   ├── savedListingController.js
-│   └── systemLogController.js
-├── routes/
-│   ├── authRoutes.js
-│   ├── hospitalRoutes.js
-│   ├── doctorRoutes.js
-│   ├── specialtyRoutes.js
-│   ├── medicalServiceRoutes.js
-│   ├── reviewRoutes.js
-│   ├── savedListingRoutes.js
-│   └── systemLogRoutes.js
-├── middlewares/
-│   ├── authMiddleware.js       # JWT verification, attaches req.user
-│   ├── adminMiddleware.js      # role === 'ADMIN' guard
-│   ├── uploadMiddleware.js     # Multer + Cloudinary config for review proof photos
-│   ├── validateMiddleware.js   # Zod request validation
-│   └── errorMiddleware.js      # centralized error handling (incl. Prisma error codes)
-├── validators/
-│   ├── authValidators.js
-│   ├── hospitalValidators.js
-│   ├── doctorValidators.js
-│   ├── specialtyValidators.js
-│   ├── medicalServiceValidators.js
-│   ├── reviewValidators.js
-│   ├── savedListingValidators.js
-│   └── commonValidators.js
-├── config/
-│   └── cloudinary.js
-├── database/
-│   └── db.js                   # Prisma client + connect/disconnect helpers
 ├── prisma/
-│   └── schema.prisma
-├── seed.js                     # sample data for local/dev testing
-└── server.js
+│   └── schema.prisma            # 12-model schema (see Data Model below)
+├── prisma.config.ts              # Prisma 7 config (schema path, migrations path, datasource URL)
+└── src/
+    ├── config/
+    │   └── cloudinary.js         # Cloudinary SDK config
+    ├── controllers/
+    │   ├── authController.js
+    │   ├── userController.js
+    │   ├── hospitalController.js
+    │   ├── doctorController.js
+    │   ├── doctorAffiliationController.js
+    │   ├── specialtyController.js
+    │   ├── medicalServiceController.js
+    │   ├── reviewController.js
+    │   ├── savedListingController.js
+    │   └── systemLogController.js
+    ├── database/
+    │   └── db.js                 # Prisma client, wired to Postgres via @prisma/adapter-pg
+    ├── generated/
+    │   └── prisma/                # Prisma Client output (generated, not hand-edited)
+    ├── lib/
+    │   └── prisma.ts
+    ├── middlewares/
+    │   ├── authMiddleware.js      # JWT verification, attaches req.user
+    │   ├── adminMiddleware.js     # role === 'ADMIN' guard
+    │   ├── uploadMiddleware.js    # Multer + Cloudinary storage for review proof photos
+    │   ├── validateRequest.js     # Zod request validation
+    │   └── errorMiddleware.js     # 404 handler + centralized error handling (incl. Prisma error codes)
+    ├── routes/
+    │   ├── authRoutes.js
+    │   ├── userRoutes.js
+    │   ├── hospitalRoutes.js
+    │   ├── doctorRoutes.js
+    │   ├── specialtyRoutes.js
+    │   ├── medicalServiceRoutes.js
+    │   ├── reviewRoutes.js
+    │   ├── savedListingRoutes.js
+    │   └── systemLogRoutes.js
+    ├── utils/
+    │   └── generatetoken.js       # issues JWT, sets httpOnly cookie
+    ├── validators/
+    │   └── registrationValidator.js
+    └── server.js                  # app entry point, route mounting, graceful shutdown
 ```
+
+---
+
+## Data Model
+
+Defined in `prisma/schema.prisma` — 12 models on PostgreSQL, all primary keys as UUIDs:
+
+| Model | Purpose |
+|---|---|
+| `User` | Account, credentials (hashed), role (`USER`/`ADMIN`) |
+| `Hospital` | Hospital directory entries |
+| `Doctor` | Doctor directory entries, linked to a `Specialty` |
+| `DoctorAffiliation` | Many-to-many link between doctors and hospitals |
+| `MedicalService` | Services offered by a hospital |
+| `Specialty` | Medical specialties (used to categorize doctors) |
+| `Review` | Rating + comment against a hospital, doctor, and/or service; moderation status |
+| `ReviewProof` | Optional evidence attached to a review (bill, appointment number, or file) |
+| `ReviewVote` | Helpful / not-helpful votes on a review, one per user |
+| `ReviewReport` | User-submitted reports flagging a review for moderation |
+| `SavedListing` | A user's bookmarked hospital, doctor, or service |
+| `SystemLog` | Internal audit trail written by controllers via a `logAction()` helper |
+
+Key enums: `UserRole`, `ApprovalStatus`, `ListingEntity`, `ProofType`, `LogSeverity`, `VoteType`, `ReportReason`, `DoctorType`.
 
 ---
 
@@ -73,9 +116,11 @@ Built with **Node.js**, **Express**, **Prisma**, and **PostgreSQL**.
 
 ### 1. Clone and install
 
+This project lives inside a larger coursework repository. Clone it and move into the project folder:
+
 ```bash
-git clone <your-repo-url>
-cd med-review
+git clone https://github.com/Tofayel5152/CSE_study.git
+cd CSE_study/DBMS/Group_Project_Med-review
 npm install
 ```
 
@@ -88,7 +133,7 @@ Create a `.env` file in the project root:
 DATABASE_URL=postgresql://user:password@host:5432/dbname
 
 # Server
-PORT=5000
+PORT=3000
 NODE_ENV=development
 
 # JWT
@@ -106,28 +151,31 @@ FRONTEND_URL=http://localhost:3000
 
 ### 3. Set up the database
 
+The project uses Prisma's driver adapter (`@prisma/adapter-pg`) rather than a schema-level `url`, so the connection string is read from `DATABASE_URL` at runtime. No migrations are checked into the repo yet, so push the schema directly to your database:
+
 ```bash
 npx prisma generate
-npx prisma migrate deploy
+npx prisma db push
 ```
+
+`npm install` also triggers `prisma generate` automatically via the `postinstall` script.
 
 ### 4. (Optional) Seed sample data
 
-Seeds 10 records per model — users (1 admin + 9 regular), specialties, hospitals, doctors, affiliations, services, reviews (mixed statuses), proofs, votes, reports, saved listings, and system logs. Useful for exercising every endpoint without manual setup.
-
 ```bash
-node seed.js
+npm run seed
 ```
 
-All seeded users share the password `Password123!`. See the console output after seeding for the full list of test emails, including the admin account.
+This runs `prisma/seed.js`, intended to populate the database with sample users, hospitals, doctors, and reviews for exercising the API without manual setup. Add or update that file with your own fixture data as needed.
 
 ### 5. Run the server
 
 ```bash
-npm start
+npm start        # production
+npm run dev       # development, with nodemon auto-reload
 ```
 
-Server runs at `http://localhost:5000` by default.
+Server runs at `http://localhost:3000` by default (configurable via `PORT`).
 
 ---
 
@@ -148,7 +196,7 @@ Server runs at `http://localhost:5000` by default.
 
 ## API Reference
 
-Base URL: `{{baseURL}}` (e.g. `http://localhost:5000/`)
+Base URL: `{{baseURL}}` (e.g. `http://localhost:3000/`)
 
 ### Auth (`/auth`)
 
@@ -158,6 +206,15 @@ Base URL: `{{baseURL}}` (e.g. `http://localhost:5000/`)
 | POST | `/auth/login` | Public | `email, password` |
 | POST | `/auth/logout` | Public | — |
 | GET | `/auth/profile` | Logged in | — |
+
+### Users (`/user`)
+
+| Method | Route | Access | Body |
+|---|---|---|---|
+| GET | `/user` | Admin | — returns all users |
+| GET | `/user/:id` | Logged in | — |
+| PUT | `/user/:id` | Logged in | profile fields to update |
+| DELETE | `/user/:id` | Logged in | — |
 
 ### Specialties (`/specialties`)
 
@@ -307,10 +364,20 @@ Required environment variables must be set in Render's dashboard (see [Environme
 
 ## Testing
 
-A Postman collection covering all endpoints (with sample request bodies, auth handling, and chained-ID test scripts) is recommended for manual/exploratory testing. Use the seeded admin account to test admin-gated routes, and a seeded regular user account to confirm those same routes correctly return `403`.
+A Postman collection covering all endpoints (with sample request bodies, auth handling, and chained-ID test scripts) is recommended for manual/exploratory testing. Seed an admin account (`role: ADMIN` in the `User` table) to test admin-gated routes, and a regular user account to confirm those same routes correctly return `403`.
+
+---
+
+## Documentation
+
+Supporting course deliverables are included under `Report and  Presentation/`:
+
+- `Project  Proposal.pdf`
+- `MedReview_Project_Report.pdf`
+- `MedReview_Presentation.pdf`
 
 ---
 
 ## License
 
-Add your license here.
+ISC — see `package.json`. Submitted as coursework for CSE 2423 (Database Management Systems), IIUC.
