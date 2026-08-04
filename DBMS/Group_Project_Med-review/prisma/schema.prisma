@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  userId        String         @id @default(uuid()) @db.Uuid
+  firstName     String         @db.VarChar(100)
+  lastName      String?        @db.VarChar(100)
+  email         String         @unique @db.VarChar(150)
+  passwordHash  String         @db.VarChar(255)
+  role          UserRole       @default(USER)
+  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime       @updatedAt @db.Timestamptz(6)
+  nid           String         @unique @db.VarChar(17)
+  phone         String         @db.VarChar(11)
+  reviews       Review[]
+  reviewReports ReviewReport[]
+  reviewVotes   ReviewVote[]
+  savedListings SavedListing[]
+  systemLogs    SystemLog[]
+}
+
+model Hospital {
+  hospitalId         String              @id @default(uuid()) @db.Uuid
+  name               String              @db.VarChar(150)
+  address            String
+  city               String              @db.VarChar(100)
+  country            String              @default("Bangladesh") @db.VarChar(100)
+  createdAt          DateTime            @default(now()) @db.Timestamptz(6)
+  doctorAffiliations DoctorAffiliation[]
+  medicalServices    MedicalService[]
+  reviews            Review[]
+
+  @@index([city])
+  @@index([name])
+}
+
+model Doctor {
+  doctorId           String              @id @default(uuid()) @db.Uuid
+  specialtyId        String              @db.Uuid
+  name               String              @db.VarChar(100)
+  createdAt          DateTime            @default(now()) @db.Timestamptz(6)
+  bmdcId             String              @unique @db.VarChar(20)
+  doctorType         DoctorType          @default(MBBS)
+  qualification      String
+  specialty          Specialty           @relation(fields: [specialtyId], references: [specialtyId])
+  doctorAffiliations DoctorAffiliation[]
+  reviews            Review[]
+
+  @@index([name])
+}
+
+model DoctorAffiliation {
+  doctorAffiliationId String   @id @default(uuid()) @db.Uuid
+  doctorId            String   @db.Uuid
+  hospitalId          String   @db.Uuid
+  isPrimary           Boolean  @default(true)
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  doctor              Doctor   @relation(fields: [doctorId], references: [doctorId], onDelete: Cascade)
+  hospital            Hospital @relation(fields: [hospitalId], references: [hospitalId], onDelete: Cascade)
+
+  @@unique([doctorId, hospitalId])
+}
+
+model MedicalService {
+  serviceId   String   @id @default(uuid()) @db.Uuid
+  hospitalId  String   @db.Uuid
+  serviceName String   @db.VarChar(150)
+  description String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  hospital    Hospital @relation(fields: [hospitalId], references: [hospitalId], onDelete: Cascade)
+  reviews     Review[]
+}
+
+model Specialty {
+  specialtyId String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  doctors     Doctor[]
+
+  @@index([slug])
+}
+
+model Review {
+  reviewId          String          @id @default(uuid()) @db.Uuid
+  userId            String?         @db.Uuid
+  hospitalId        String?         @db.Uuid
+  staffRating       Int
+  punctualityRating Int
+  knowledgeRating   Int?
+  bedsideRating     Int?
+  overallRating     Decimal         @db.Decimal(3, 2)
+  comment           String
+  status            ApprovalStatus  @default(PENDING)
+  adminNotes        String?
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+  doctorId          String?         @db.Uuid
+  serviceId         String?         @db.Uuid
+  doctor            Doctor?         @relation(fields: [doctorId], references: [doctorId], onDelete: Cascade)
+  hospital          Hospital?       @relation(fields: [hospitalId], references: [hospitalId], onDelete: Cascade)
+  service           MedicalService? @relation(fields: [serviceId], references: [serviceId], onDelete: Cascade)
+  user              User?           @relation(fields: [userId], references: [userId])
+  reviewProofs      ReviewProof[]
+  reviewReports     ReviewReport[]
+  reviewVotes       ReviewVote[]
+
+  @@index([doctorId])
+  @@index([hospitalId])
+  @@index([serviceId])
+  @@index([status])
+}
+
+model ReviewProof {
+  proofId    String    @id @default(uuid()) @db.Uuid
+  reviewId   String    @db.Uuid
+  type       ProofType
+  proofValue String
+  uploadedAt DateTime  @default(now()) @db.Timestamptz(6)
+  review     Review    @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
+
+model ReviewVote {
+  voteId    String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @db.Uuid
+  userId    String   @db.Uuid
+  voteType  VoteType
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  review    Review   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+}
+
+model ReviewReport {
+  reportId  String       @id @default(uuid()) @db.Uuid
+  reviewId  String       @db.Uuid
+  userId    String       @db.Uuid
+  reason    ReportReason
+  details   String?
+  isHandled Boolean      @default(false)
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  review    Review       @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model SavedListing {
+  savedId    String        @id @default(uuid()) @db.Uuid
+  userId     String        @db.Uuid
+  entityId   String        @db.Uuid
+  createdAt  DateTime      @default(now()) @db.Timestamptz(6)
+  entityType ListingEntity
+  user       User          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([userId, entityType, entityId])
+}
+
+model SystemLog {
+  logId     String      @id @default(uuid()) @db.Uuid
+  userId    String?     @db.Uuid
+  action    String      @db.VarChar(100)
+  severity  LogSeverity @default(INFO)
+  details   String
+  ipAddress String?     @db.VarChar(45)
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  user      User?       @relation(fields: [userId], references: [userId])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ListingEntity {
+  HOSPITAL
+  DOCTOR
+  MEDICAL_SERVICE
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ProofType {
+  BILL
+  APPOINTMENT_NUMBER
+  FILE_UPLOAD
+}
+
+enum LogSeverity {
+  INFO
+  WARNING
+  ERROR
+  SECURITY
+}
+
+enum VoteType {
+  HELPFUL
+  NOT_HELPFUL
+}
+
+enum ReportReason {
+  SPAM
+  OFFENSIVE_LANGUAGE
+  HIPAA_VIOLATION
+  FALSE_INFORMATION
+  OTHER
+}
+
+enum DoctorType {
+  MBBS
+  BDS
+}
