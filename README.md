@@ -107,7 +107,7 @@ All contributions, missing report additions, and corrections are welcome!
 | **GitHub** | [@Tofayel5152](https://github.com/Tofayel5152) |
 | **Repository** | [CSE_study](https://github.com/Tofayel5152/CSE_study.git) |
 | **Facebook** | [Tofayel Ahmmed](https://www.facebook.com/tofayel.ahmmed512) |
-| **Instagram** | [tofayelahmmedtanvir](https://www.instagram.com/tofayelahmmedtanvir) |
+| **Instagram** | [Tofayel Ahmmed Tanvir](https://www.instagram.com/tofayel.ahmmed512) |
 | **YouTube** | [Tofayel Ahmmed Tanvir](http://www.youtube.com/@tofayelahmmedtanvir512) |
 | **Telegram** | [Tofayel Ahmmed](https://t.me/TofayelAhmmed152) |
 | **LinkedIn** | [Tofayel Ahmmed](https://www.linkedin.com/in/tofayel-ahmmed-l5152) |
