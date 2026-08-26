@@ -1,0 +1,51 @@
+Shortcut:
+1. !:Full HTML5 boilerplate (<!DOCTYPE html> ... </html>)
+2. html:5:Same as ! → HTML5 boilerplate
+3,div:<div></div>
+4. div.classname:"<div class=""classname""></div>"
+5. div#idname:"<div id=""idname""></div>"
+6. ul>li:<ul><li></li></ul>
+7. ul>li*5:Creates 5 <li> inside <ul>
+8. div>p:<div><p></p></div>
+9. div>p*3:<div><p></p><p></p><p></p></div>
+10. div>ul>li*3:Nested structure with 3 list items
+11. a:link:"<a href=""""></a>"
+12. a:email:"<a href=""mailto:""></a>"
+13. img:"<img src="""" alt="""">"
+14. input:text:"<input type=""text"">"
+15. input:password:"<input type=""password"">"
+16. input:checkbox:"<input type=""checkbox"">"
+17. input:radio:"<input type=""radio"">"
+18. input:submit:"<input type=""submit"">"
+19. form:post:"<form action="""" method=""post""></form>"
+20. table>tr*3>td*3:3x3 table structure
+21. link:css:"<link rel=""stylesheet"" href="""">"
+22. script:src:"<script src=""""></script>"
+23. meta:charset:"<meta charset=""UTF-8"">"
+24. meta:viewport:"<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">"
+25. h1:<h1></h1>
+26. h2:<h2></h2>
+27. h3:<h3></h3>
+28. h4:<h4></h4>
+29. h5:<h5></h5>
+30. h:,<h6></h6>
+31. p:<p></p>
+32. span:<span></span>
+33. section:<section></section>
+34. header:<header></header>
+35. footer:<footer></footer>
+36. nav:<nav></nav>
+37. article:<article></article>
+38. aside:<aside></aside>
+39. main:<main></main>
+40. em:<em></em>
+41. strong:<strong></strong>
+42. bq:<blockquote></blockquote>
+43. code:<code></code>
+44. pre:<pre></pre>
+45. br:<br>
+46. hr:<hr>
+47. video:"<video src="""" controls></video>"
+48. audio:"<audio src="""" controls></audio>"
+50. iframe:"<iframe src="""" frameborder=""0""></iframe>"
+49. canvas:<canvas></canvas>
