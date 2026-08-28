@@ -1,4 +1,6 @@
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: Arial, sans-serif;
@@ -10,7 +12,9 @@ body {
   align-items: center;
 }
 
-header, main, footer {
+header,
+main,
+footer {
   width: 320px;
 }
 
@@ -30,9 +34,14 @@ header, main, footer {
   padding: 24px;
 }
 
-article, section { display: block; }
+article,
+section {
+  display: block;
+}
 
-footer { margin-top: 16px; }
+footer {
+  margin-top: 16px;
+}
 
 h1 {
   font-size: 20px;
@@ -86,7 +95,9 @@ button {
   cursor: pointer;
 }
 
-button:hover { background: #555; }
+button:hover {
+  background: #555;
+}
 
 .hint {
   font-size: 12px;
@@ -115,7 +126,9 @@ button:hover { background: #555; }
   font-size: 14px;
 }
 
-.field-row span:first-child { color: #777; }
+.field-row span:first-child {
+  color: #777;
+}
 
 .result-list {
   font-size: 14px;
