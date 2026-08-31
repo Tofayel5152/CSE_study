@@ -1,0 +1,220 @@
+Cascading Style Sheets(CSS):
+-> Giving body muscle/Clothing a skeleton. Or Coloring a design.
+3 ways to add CSS to HTML:
+1. Inline CSS: Adding style directly to an HTML element using the "style" attribute.
+2. Internal CSS: Adding style within a <style> tag in the <head> section of the HTML document.
+3. External CSS: Linking to an external CSS file using the <link> tag in the <head> section of the HTML document.
+
+Css Selectors:(Basic Selectors)
+1. Element Selector: Selects all elements of a specific type. Example: p { color: blue; }
+2. Class Selector: Selects all elements with a specific class attribute. Example: .classname { font-size: 16px; }
+3. ID Selector: Selects a single element with a specific id attribute. Example: #idname { background-color: yellow; }
+4. Descendant Selector: Selects elements that are descendants of a specified element. Example: .box a { color: red; }
+5. Hover Selector: Selects elements when the mouse hovers over them. Example: a:hover { text-decoration: underline; }
+6. Grouping Selector: Selects multiple elements and applies the same styles to them. Example: h1, h2, h3 { font-family: Arial; }
+7. Universal Selector: Selects all elements on the page. Example: * { margin: 0; padding: 0; }
+
+
+Colors and Typography:
+1. Color: CSS allows you to set the color of text, backgrounds, borders, and other elements using color names, hex codes, RGB values,
+RGBA values, HSL values and HSLA values.
+2. Typography: CSS provides various properties to control the appearance of text, including font-family, font-size, font-weight, line-height,
+ letter-spacing, text-align, margin-bottom, border-radius etc.
+
+-> When using font families, it's a good practice to provide a fallback font in case the preferred font is not available on the user's device.
+ For example: font-family: "Helvetica Neue", sans-serif;
+
+-> We can create a custom font by using @font-face rule in CSS. This allows us to use fonts that are not installed on the user's device. EX: 
+@font-face {
+    font-family: "MyCustomFont";
+    src: url("path/to/font.woff2") format("woff2"),
+         url("path/to/font.woff") format("woff");
+         font-weight: normal;
+         font-style: normal;
+}
+
+Use it in your CSS like this:
+.text {
+    font-family: "MyCustomFont", sans-serif;
+}
+
+Box Model:
+The CSS box model describes the rectangular boxes that are generated for elements in the document tree and consists of the following components:
+1. Content: The innermost part of the box where text and images appear.
+2. Padding: The space between the content and the border. It can be set using the padding property.
+3. Border: The area surrounding the padding (if any) and content. It can be styled using the border property.
+4. Margin: The outermost layer that creates space between the element and its neighboring elements.
+
+Box Size:
+1. Content way: .box-content {
+    box-sizing: content-box; 
+    width: 200px;
+    padding: 20px;
+    border: 10px solid black;
+
+    * So, Total width = width + padding + border = 200px + 20px + 10px = 230px
+}
+
+2. Border way: .box-border {
+    box-sizing: border-box;
+    width: 200px;
+    padding: 20px;
+    border: 10px solid black;
+
+    * So, Total width = width = 200px
+}
+
+Card Design:
+1. A card is a flexible and extensible content container that includes options for headers, footers, content, colors, etc. It is a common UI component
+ used in web design to display information in a visually appealing way.
+2. Basic structure of a card:
+.Card {
+    width: 300px;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.card-header {
+    padding: 10px;
+    background: #3498db;
+    color: white;
+}
+.card-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+.card-body {
+    padding: 20px;
+    line-height: 1.6;
+}
+.card-footer {
+    padding: 10px;
+    background: #f1f1f1;
+    text-align: right;
+}
+
+Grid Layout:
+1. CSS Grid Layout is a two-dimensional layout system for the web that allows you to create complex and responsive grid-based designs with ease. It provides
+ a way to define rows and columns, and place items within those rows and columns.
+2. Basic structure of a grid container:
+
+In HTML:
+<div class="grid">
+<div class="grid-item">Item 1</div>
+<div class="grid-item">Item 2</div>
+<div class="grid-item">Item 3</div>
+</div>
+
+In CSS:
+.grid{ 
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+padding: 20px;
+}
+.grid-item {
+width: calc(50%- 10px);
+padding: 20px;
+background:
+border: 1px solid #dee2e6;
+border-radius: 4px;
+box-sizing: border-box;
+}
+
+CSS layout properties:
+1. Display: Specifies how an element is displayed on the page (e.g., block, inline,inline-block, hidden, flex, grid).
+2. Position: Specifies the positioning method for an element (e.g., static, relative, absolute, fixed, sticky).
+3. z-index and stacking context: Controls the stacking order of elements on the page. Elements with a higher z-index value will appear in front of elements with
+ a lower z-index value.
+4. Float and clear: Float allows elements to be taken out of the normal flow and positioned to the left or right of their container. Clear is used to control the
+ behavior of elements that follow floated elements.
+5. Flexbox: A one-dimensional layout model that allows you to create flexible and responsive layouts by distributing space along a single axis (either horizontally
+ or vertically). It provides properties for aligning and distributing items within a container. Can also use flex-wrap to control how items wrap within the container.
+6. Alignment and justification: CSS provides properties for aligning and justifying content within a container, such as text-align, vertical-align, justify-content,
+ align-items, and align-self. These properties allow you to control the positioning of elements within their parent containers.
+
+
+* Navbar: A navigation bar is a common UI component used in web design to provide links to different sections of a website. It can be created using HTML and styled
+ with CSS to create a visually appealing and user-friendly navigation experience. Common techniques for creating a navbar include using flexbox or grid layout, and
+  adding hover effects and dropdown menus for additional functionality.
+
+* Responsive Design: Responsive web design is an approach to web design that aims to create websites that provide an optimal viewing experience across a wide range
+ of devices, from desktop computers to mobile phones. It involves using flexible layouts, media queries, and other techniques to ensure that the website adapts to
+  different screen sizes and resolutions. Common techniques for creating responsive designs include using fluid grids, flexible images, and media queries to adjust
+   the layout and styling of the website based on the device being used.
+   Ex:
+   use of meta tag in HTML:
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   In CSS:
+   BASE Design: (mobile-first approach)
+   .container {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 100%;
+   }
+
+    * If screen width gets larger we enhance the design using media queries. These are called breakpoints(the points/screen sizes where layout changes). We can use min-width
+     or max-width to define the breakpoints.
+    @media (min-width: 768px) {
+     .container {
+        padding: 20px;
+          max-width: 750px;
+     }
+    }
+    @media (min-width: 1024px) {
+     .container {
+        padding: 30px;
+          max-width: 1000px;
+     }
+    }
+
+
+* CSS variables: CSS variables, also known as custom properties, allow you to define reusable values in your CSS code. They are defined using the -- prefix and can be accessed
+ using the var() function. CSS variables can be used to store colors, font sizes, spacing values, and other properties that you want to reuse throughout your stylesheet.
+  This makes it easier to maintain and update your styles, as you can change the value of a variable in one place and have it automatically update throughout your code.
+  Example:
+  :root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --font-size: 16px;
+  }
+  .button {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: var(--font-size);
+  }
+
+  * CSS transitions and animations: CSS transitions and animations allow you to create smooth and visually appealing effects on your web pages. Transitions are used to create
+   smooth changes between two states of an element, while animations allow you to create more complex and dynamic effects by defining keyframes and specifying how an element
+    should change over time. Both transitions and animations can be used to enhance the user experience and make your website more engaging.
+    Example of transition:
+    .button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease-in-out;
+    }
+    .button:hover {
+        background-color: #2ecc71;
+    }
+    Example of animation:
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+* YT Resources:
+1. https://youtu.be/tfzGsCxutWk
+2. https://youtu.be/j6nOnIT-T1o
+3. https://youtu.be/QeslNHmTObk
