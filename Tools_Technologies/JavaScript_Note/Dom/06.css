@@ -1,0 +1,27 @@
+/* h1{
+    color: red;
+    text-align: center;
+    background-color: green;
+
+}
+body{
+    background-color: rgb(142, 255, 179);
+}
+button{
+    background-color: burlywood;
+} */
+
+/* Practice:*/
+h2{
+    color: rgb(255, 253, 253);
+    background-color: black;
+    text-align: center;
+}
+.box{
+    height: 10rem;
+    width: 10rem;
+    border: 1px solid black;
+    margin: 5px;
+    text-align: center;
+    background-color: rgb(169, 169, 255);
+}
