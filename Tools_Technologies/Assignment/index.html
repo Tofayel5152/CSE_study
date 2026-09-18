@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBoard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.1.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+</head>
+
+<body id="bg-color" class="bg-[#edf1f5] text-[#1f2333]">
+    <div class="max-w-[1320px] mx-auto px-3 sm:px-5 py-6">
+
+        <!-- Navbar -->
+        <header>
+            <nav class="flex flex-wrap items-center justify-between gap-3 bg-white/85 border border-slate-200 rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <img class="w-11 h-11" src="Pictures/DevBoardLogo.png" alt="DevBoard logo">
+                    <h1 class="text-2xl sm:text-3xl tracking-tight">Dev<span class="font-extrabold">Board</span></h1>
+                </div>
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <a href="blogs.html" class="flex items-center gap-2 px-4 py-2 rounded-full bg-[#4d63f1]/10 font-bold">
+                        <i class="fa-solid fa-newspaper text-[#4d63f1]"></i> Blogs
+                    </a>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-[#4d63f1]/10 font-bold">
+                        <input type="checkbox" checked class="w-4 h-4 accent-[#4d63f1]">
+                        <span id="total-task">23</span>
+                    </div>
+                    <button id="bg-btn" aria-label="Change background" class="w-10 h-10 rounded-full overflow-hidden cursor-pointer">
+                        <img class="w-full h-full" src="Pictures/ColorChange.png" alt="">
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="flex flex-col lg:flex-row items-start gap-6 mt-6">
+
+            <!-- Board -->
+            <section class="w-full lg:flex-1 min-w-0 bg-white/50 border border-slate-200 rounded-3xl p-4 sm:p-5">
+
+                <!-- Summary row -->
+                <div class="grid gap-4 md:grid-cols-4">
+                    <div class="flex items-center gap-4 bg-[#eef2ff] rounded-2xl p-4 min-h-[120px]">
+                        <div class="w-14 h-14 shrink-0 rounded-2xl bg-white grid place-items-center">
+                            <input type="checkbox" checked class="w-6 h-6 accent-[#4d63f1]">
+                        </div>
+                        <div>
+                            <p class="text-slate-600">Task Assigned</p>
+                            <p id="task-count" class="text-4xl font-extrabold tracking-tight">06</p>
+                        </div>
+                    </div>
+
+                    <a href="blogs.html" class="md:col-span-2 flex items-center justify-between gap-4 rounded-2xl p-4 min-h-[120px] bg-gradient-to-r from-[#435ef0] via-[#5f73f8] to-[#7e8cf7] hover:brightness-110">
+                        <div class="w-20 h-20 shrink-0 rounded-2xl bg-white/20 overflow-hidden">
+                            <img class="w-full h-full object-cover" src="Pictures/Dincover.png" alt="Discover">
+                        </div>
+                        <h2 class="flex-1 text-center text-white text-xl sm:text-2xl tracking-tight">Discover Something<br>New Today!</h2>
+                    </a>
+
+                    <div class="flex items-center gap-4 bg-[#eef2ff] rounded-2xl p-4 min-h-[120px]">
+                        <div class="w-14 h-14 shrink-0 rounded-2xl bg-white grid place-items-center">
+                            <img class="w-8 h-8" src="Pictures/Calender.png" alt="Calendar">
+                        </div>
+                        <div id="date" class="flex-1 text-center font-bold"></div>
+                    </div>
+                </div>
+
+                <hr class="my-6 border-0 border-t-2 border-dashed border-[#4d63f1]/25">
+
+                <!-- Task cards -->
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Shop Ease</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Fix Mobile Button Issue</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">The submit button overlaps the header on small screens. Check the mobile breakpoint and confirm the click handler still fires after the fix.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">21 March 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Soft Pay</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Add Pay Success Modal</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">Show a confirmation modal once a payment goes through. Include the amount paid, a close button, and a link back to the order page.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">25 March 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Meta</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Add new reaction 😍</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">Add a new reaction next to like and comment. Update the icon set and make sure the count updates when it's clicked.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">31 March 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Programming Hero</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Fix Video Loading Issue</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">Course videos sometimes buffer forever. Debug the player's loading event and show a fallback message if a video fails to load.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">21 March 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Google LLC</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Integrate AI search</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">Connect the search bar to the AI-powered endpoint. Handle empty queries and show a loading state while results come back.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">01 April 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+
+                    <article class="task-card flex flex-col bg-[#eef2ff] rounded-2xl p-4">
+                        <span class="self-start bg-white rounded-lg px-3 py-2 text-sm font-semibold">Polygon Tech</span>
+                        <h3 class="my-3 text-xl font-bold tracking-tight">Review API Prohashi Site</h3>
+                        <p class="flex-1 bg-white/80 rounded-xl p-3 text-sm text-slate-500">Go through the Prohashi site's API integration and flag any endpoints that are returning stale data.</p>
+                        <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500">Deadline</p>
+                                <p class="font-bold">5 May 2025</p>
+                            </div>
+                            <button class="task-btn bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-2.5 cursor-pointer disabled:bg-slate-400 disabled:cursor-default">Completed</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Activity log -->
+            <aside class="w-full lg:w-80 shrink-0 bg-white/70 border border-slate-200 rounded-3xl p-5">
+                <div class="flex items-center justify-center gap-2">
+                    <img class="w-6 h-6" src="Pictures/activity.png" alt="">
+                    <h2 class="text-lg font-bold">Activity Log</h2>
+                </div>
+                <button id="clearActivity" class="block w-full max-w-[180px] mx-auto my-4 bg-[#4d63f1] text-white font-bold rounded-lg py-3 cursor-pointer">Clear History</button>
+                <hr class="mb-4 border-0 border-t-2 border-dashed border-[#4d63f1]/25">
+                <div id="activity" class="flex flex-col gap-3"></div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

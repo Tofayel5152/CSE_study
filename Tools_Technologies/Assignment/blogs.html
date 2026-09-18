@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBoard Blogs</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.1.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+</head>
+
+<body class="bg-[#edf1f5] text-[#1f2333]">
+    <div class="max-w-[1320px] mx-auto px-3 sm:px-5 py-6">
+
+        <header>
+            <nav class="flex flex-wrap items-center justify-between gap-3 bg-white/85 border border-slate-200 rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <img class="w-11 h-11" src="Pictures/DevBoardLogo.png" alt="DevBoard logo">
+                    <h1 class="text-2xl sm:text-3xl tracking-tight">Dev<span class="font-extrabold">Board</span></h1>
+                </div>
+                <a href="index.html" class="flex items-center gap-2 bg-[#4d63f1] text-white font-bold rounded-lg px-5 py-3">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Desk
+                </a>
+            </nav>
+        </header>
+
+        <main>
+            <h2 class="text-center text-3xl sm:text-4xl font-bold my-8">Blogs</h2>
+
+            <article class="my-4">
+                <h3 class="bg-white rounded-lg p-4 text-lg sm:text-xl font-semibold">Question-1: What are the different ways to select an element in the DOM?</h3>
+                <p class="bg-white rounded-lg p-4 mt-1"><span class="font-semibold">Answer:</span> The common ways are getElementById, getElementsByClassName, getElementsByTagName, querySelector, and querySelectorAll.</p>
+            </article>
+
+            <article class="my-4">
+                <h3 class="bg-white rounded-lg p-4 text-lg sm:text-xl font-semibold">Question-2: What is the difference between innerHTML, innerText, and textContent?</h3>
+                <p class="bg-white rounded-lg p-4 mt-1"><span class="font-semibold">Answer:</span> innerHTML gives you the HTML markup inside an element, innerText gives you the visible text only, and textContent gives you all the text, including text hidden by CSS.</p>
+            </article>
+
+            <article class="my-4">
+                <h3 class="bg-white rounded-lg p-4 text-lg sm:text-xl font-semibold">Question-3: What is event delegation in the DOM?</h3>
+                <p class="bg-white rounded-lg p-4 mt-1"><span class="font-semibold">Answer:</span> Event delegation means attaching a single event listener to a parent element to handle events from its children, instead of adding a listener to each child.</p>
+            </article>
+
+            <article class="my-4">
+                <h3 class="bg-white rounded-lg p-4 text-lg sm:text-xl font-semibold">Question-4: What is event bubbling in the DOM?</h3>
+                <p class="bg-white rounded-lg p-4 mt-1"><span class="font-semibold">Answer:</span> Event bubbling is when an event starts at the target element and then moves upward through its parent, grandparent, and so on, until it reaches the document.</p>
+            </article>
+
+            <article class="my-4">
+                <h3 class="bg-white rounded-lg p-4 text-lg sm:text-xl font-semibold">Question-5: How do you create, add, and remove elements using JavaScript?</h3>
+                <p class="bg-white rounded-lg p-4 mt-1"><span class="font-semibold">Answer:</span> const h1 = document.createElement('h1'); document.body.appendChild(h1); h1.remove();</p>
+            </article>
+        </main>
+    </div>
+</body>
+</html>
