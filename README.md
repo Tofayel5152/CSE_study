@@ -54,9 +54,9 @@ This repository is designed to keep all IIUC CSE academic programming coursework
 
 | Course Code | Course Title | Type | Credits | Code & Notes |
 | :--- | :--- | :---: | :---: | :---: |
-| `CSE-3527` | Compiler | Theory | 3.0 | 🚧 Coming soon |
-| `CSE-3528` | Compiler Lab | Lab | 1.0 | 🚧 Coming soon |
-| `CSE-3532` | Tools & Technologies for Internet Programming | Practical | 2.0 | 🚧 Coming soon |
+| `CSE-3527` | Compiler | Theory | 3.0 | [<b><u>"📁"</u></b>](https://github.com/Tofayel5152/CSE_study/tree/main/Compiler) |
+| `CSE-3528` | Compiler Lab | Lab | 1.0 | [<b><u>"📁"</u></b>](https://github.com/Tofayel5152/CSE_study/tree/main/Compiler) |
+| `CSE-3532` | Tools & Technologies for Internet Programming | Practical | 2.0 | [<b><u>"📁"</u></b>](https://github.com/Tofayel5152/CSE_study/tree/main/Tools_Technologies) |
 | `CSE-3636` | Artificial Intelligence Lab | Lab | 1.0 | 🚧 Coming soon |
 | `CSE-3642` | Software Engineering Lab | Lab | 1.0 | 🚧 Coming soon |
 | `CSE-3644` | Software Development 2 Lab | Lab | 1.0 | 🚧 Coming soon |
