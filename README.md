@@ -82,11 +82,15 @@ This repository is designed to keep all IIUC CSE academic programming coursework
 
 1. **Clone the repository:**
 
+    ```bash
     git clone https://github.com/Tofayel5152/CSE_study.git
+    ```
 
 2. **Navigate to the target directory:**
 
+    ```bash
     cd CSE_study
+    ```
 
 ## 🐛 Reporting Errors & Contributions
 
