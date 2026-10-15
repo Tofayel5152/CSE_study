@@ -1,0 +1,4646 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Data Structures — Mid (complete)</title>
+    <style>
+      :root {
+        --bg: #f4f5fb;
+        --fg: #12172e;
+        --mut: #5a6385;
+        --card: #fff;
+        --ln: #d8dcee;
+        --cd: #eceffa;
+        --a: #6366f1;
+        --b: #22d3ee;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0a0e1f;
+          --fg: #e9edfb;
+          --mut: #98a2c3;
+          --card: #131933;
+          --ln: #252d52;
+          --cd: #0e1430;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0a0e1f;
+        --fg: #e9edfb;
+        --mut: #98a2c3;
+        --card: #131933;
+        --ln: #252d52;
+        --cd: #0e1430;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          clamp(13px, 1.9vh, 20px)/1.45 system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+      body:before,
+      body:after {
+        content: "";
+        position: fixed;
+        width: 50vmax;
+        height: 50vmax;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.22;
+        z-index: 0;
+        animation: fl 16s ease-in-out infinite alternate;
+      }
+      body:before {
+        background: var(--a);
+        top: -20vmax;
+        left: -15vmax;
+      }
+      body:after {
+        background: var(--b);
+        bottom: -22vmax;
+        right: -15vmax;
+        animation-delay: -8s;
+      }
+      @keyframes fl {
+        to {
+          transform: translate(8vw, 6vh) scale(1.2);
+        }
+      }
+      .s {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4vh 6vw 9vh;
+        overflow: auto;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(5vw);
+        transition:
+          opacity 0.5s,
+          transform 0.5s,
+          visibility 0s 0.5s;
+      }
+      .s.pv {
+        transform: translateX(-5vw);
+      }
+      .s.on {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+      }
+      .r {
+        opacity: 0;
+        transform: translateY(14px);
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+      }
+      .on .r {
+        opacity: 1;
+        transform: none;
+      }
+      h1 {
+        font-size: 2.8em;
+        line-height: 1.1;
+        margin: 0.2em 0;
+        background: linear-gradient(90deg, var(--a), var(--b));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      h2 {
+        font-size: 1.65em;
+        margin: 0 0 0.5em;
+        border-left: 0.2em solid var(--a);
+        padding-left: 0.4em;
+      }
+      .tag {
+        color: var(--b);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-size: 0.75em;
+        font-weight: 700;
+      }
+      .sub,
+      .m {
+        color: var(--mut);
+      }
+      .g {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+        gap: 0.8em;
+        margin: 0.3em 0;
+      }
+      .c {
+        background: var(--card);
+        border: 1px solid var(--ln);
+        border-radius: 14px;
+        padding: 0.6em 1em;
+        font-size: 0.92em;
+      }
+      .c b {
+        color: var(--a);
+      }
+      pre,
+      code {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+      }
+      pre {
+        background: var(--cd);
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        padding: 0.6em 1em;
+        overflow: auto;
+        margin: 0.4em 0;
+        font-size: 0.85em;
+        line-height: 1.45;
+      }
+      code {
+        background: var(--cd);
+        padding: 0.05em 0.35em;
+        border-radius: 5px;
+        font-size: 0.88em;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.82em;
+        margin: 0.3em 0;
+      }
+      td,
+      th {
+        border: 1px solid var(--ln);
+        padding: 0.25em 0.6em;
+        text-align: left;
+      }
+      th {
+        background: var(--cd);
+      }
+      p {
+        margin: 0.35em 0;
+      }
+      button,
+      input,
+      textarea {
+        font: inherit;
+        font-size: 0.85em;
+        border-radius: 9px;
+        border: 1px solid var(--ln);
+        background: var(--card);
+        color: var(--fg);
+        padding: 0.25em 0.6em;
+      }
+      button {
+        cursor: pointer;
+        background: var(--a);
+        color: #fff;
+        border-color: transparent;
+        margin: 0.1em;
+      }
+      button:hover {
+        filter: brightness(1.15);
+      }
+      button.o {
+        background: var(--card);
+        color: var(--fg);
+        border-color: var(--ln);
+      }
+      .ch {
+        display: inline-block;
+        min-width: 2em;
+        text-align: center;
+        margin: 0.12em;
+        padding: 0.2em 0.45em;
+        border-radius: 8px;
+        background: var(--card);
+        border: 1.5px solid var(--ln);
+        transition: all 0.3s;
+      }
+      .ch.h {
+        background: var(--a);
+        color: #fff;
+        border-color: var(--a);
+        transform: translateY(-5px);
+      }
+      .ch.m {
+        background: var(--b);
+        color: #fff;
+        border-color: var(--b);
+        transform: translateY(-5px);
+      }
+      .ch.z {
+        opacity: 0.3;
+      }
+      svg {
+        font: 14px system-ui;
+      }
+      svg text {
+        fill: var(--fg);
+      }
+      svg polyline {
+        fill: none;
+        stroke: var(--mut);
+        stroke-width: 2;
+      }
+      svg .a {
+        stroke: var(--mut);
+        stroke-width: 2;
+        marker-end: url(#ar);
+      }
+      .s > * {
+        flex-shrink: 0;
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 1em;
+        align-items: start;
+        margin-top: 0.3em;
+      }
+      .two pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .two > div,
+      .g > * {
+        min-width: 0;
+      }
+      @media (max-width: 820px) {
+        .two {
+          grid-template-columns: 1fr;
+        }
+        .s pre {
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+        .s table {
+          display: block;
+          overflow-x: auto;
+        }
+      }
+      svg rect,
+      svg polygon {
+        fill: var(--card);
+        stroke: var(--a);
+        stroke-width: 2;
+      }
+      svg line {
+        stroke: var(--mut);
+        stroke-width: 2;
+      }
+      svg circle {
+        fill: var(--card);
+        stroke: var(--a);
+        stroke-width: 2;
+        transition: all 0.3s;
+      }
+      svg circle.h {
+        fill: var(--b);
+        stroke: var(--b);
+      }
+      .s a {
+        color: var(--a);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .s a:hover {
+        text-decoration: underline;
+      }
+      .ov ul {
+        list-style: none;
+        padding: 0;
+        margin: 0.3em 0;
+      }
+      .ov li {
+        margin: 0.12em 0;
+        font-size: 0.9em;
+      }
+      #bar {
+        position: fixed;
+        top: env(safe-area-inset-top, 0px);
+        left: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--a), var(--b));
+        z-index: 5;
+        transition: width 0.4s;
+      }
+      #nav {
+        position: fixed;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 1.2vh);
+        right: 3vw;
+        z-index: 5;
+        display: flex;
+        gap: 0.4em;
+        align-items: center;
+        font-size: 0.75em;
+        color: var(--mut);
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute">
+      <defs>
+        <marker
+          id="ar"
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="5"
+          markerWidth="5"
+          markerHeight="5"
+          orient="auto"
+        >
+          <path d="M0,0L10,5L0,10z" style="fill: var(--mut); stroke: none" />
+        </marker>
+      </defs>
+    </svg>
+    <div id="bar"></div>
+    <div id="nav">
+      <button class="o" id="ov" title="Overview (O)">☰</button
+      ><button class="o" id="th" title="Theme">◐</button
+      ><button class="o" id="pv">‹</button><span id="cnt"></span
+      ><button class="o" id="nx">›</button>
+    </div>
+    <section class="s">
+      <p class="tag r">Data Structures · Mid</p>
+      <h1 class="r">Foundations to Linked Lists</h1>
+      <p class="sub r">
+        Data organization · Algorithms · Arrays · Matrices · Strings · Linked
+        lists
+      </p>
+      <p class="m r" style="font-size: 0.8em">
+        ← → keys · swipe · F fullscreen · ◐ theme
+      </p>
+    </section>
+    <section class="s" id="overview">
+      <h2 class="r">Overview — tap a topic to jump to its slide</h2>
+      <div class="g ov">
+        <div class="c r">
+          <b>1 · Introduction</b>
+          <ul>
+            <li>
+              <a onclick="go(2)">Elementary data organization</a>
+              <a class="m" onclick="go(3)">·4</a>
+            </li>
+            <li><a onclick="go(4)">Information</a></li>
+            <li><a onclick="go(5)">Data types &amp; ADT</a></li>
+            <li>
+              <a onclick="go(6)">Data structure &amp; classification</a>
+              <a class="m" onclick="go(7)">·8</a>
+              <a class="m" onclick="go(8)">·9</a>
+              <a class="m" onclick="go(9)">·10</a>
+              <a class="m" onclick="go(10)">·11</a>
+            </li>
+            <li><a onclick="go(11)">Data structure operations</a></li>
+            <li>
+              <a onclick="go(12)">Algorithm, analysis &amp; complexity</a>
+            </li>
+            <li><a onclick="go(13)">Time–space trade-off</a></li>
+            <li>
+              <a onclick="go(14)">Mathematical notation &amp; functions</a>
+              <a class="m" onclick="go(15)">·16</a>
+              <a class="m" onclick="go(16)">·17</a>
+              <a class="m" onclick="go(17)">·18</a>
+            </li>
+            <li>
+              <a onclick="go(18)">Algorithmic notation</a>
+              <a class="m" onclick="go(19)">·20</a>
+              <a class="m" onclick="go(20)">·21</a>
+            </li>
+            <li>
+              <a onclick="go(21)">Control structures</a>
+              <a class="m" onclick="go(22)">·23</a>
+              <a class="m" onclick="go(23)">·24</a>
+              <a class="m" onclick="go(24)">·25</a>
+            </li>
+            <li>
+              <a onclick="go(25)">Sub-algorithms</a>
+              <a class="m" onclick="go(26)">·27</a>
+            </li>
+            <li><a onclick="go(43)">String</a></li>
+            <li>
+              <a onclick="go(44)">String operations</a>
+              <a class="m" onclick="go(45)">·46</a>
+            </li>
+            <li>
+              <a onclick="go(46)">Pattern matching algorithm</a>
+              <a class="m" onclick="go(47)">·48</a>
+              <a class="m" onclick="go(48)">·49</a>
+            </li>
+          </ul>
+        </div>
+        <div class="c r">
+          <b>2 · Array</b>
+          <ul>
+            <li>
+              <a onclick="go(27)"
+                >Linear array &amp; its representation in memory</a
+              >
+            </li>
+            <li><a onclick="go(28)">Traversing LA</a></li>
+            <li><a onclick="go(29)">Insertion in LA</a></li>
+            <li><a onclick="go(30)">Deletion in LA</a></li>
+            <li><a onclick="go(31)">Bubble sort</a></li>
+            <li>
+              <a onclick="go(32)">Linear search</a>
+              <a class="m" onclick="go(33)">·34</a>
+            </li>
+            <li>
+              <a onclick="go(34)">Binary search</a>
+              <a class="m" onclick="go(35)">·36</a>
+            </li>
+            <li>
+              <a onclick="go(36)"
+                >2D array &amp; its representation in memory</a
+              >
+              <a class="m" onclick="go(37)">·38</a>
+              <a class="m" onclick="go(38)">·39</a>
+            </li>
+            <li>
+              <a onclick="go(39)">Matrices</a>
+              <a class="m" onclick="go(40)">·41</a>
+            </li>
+            <li><a onclick="go(41)">Algebra of matrices</a></li>
+            <li><a onclick="go(42)">Sparse matrices</a></li>
+          </ul>
+        </div>
+        <div class="c r">
+          <b>3 · Linked list</b>
+          <ul>
+            <li>
+              <a onclick="go(49)"
+                >Linked list &amp; its representation in memory</a
+              >
+              <a class="m" onclick="go(50)">·51</a>
+              <a class="m" onclick="go(53)">·54</a>
+              <a class="m" onclick="go(54)">·55</a>
+            </li>
+            <li><a onclick="go(51)">Traversing a linked list</a></li>
+            <li><a onclick="go(52)">Searching a linked list</a></li>
+            <li>
+              <a onclick="go(55)">Insertion</a>
+              <a class="m" onclick="go(56)">·57</a>
+              <a class="m" onclick="go(57)">·58</a>
+              <a class="m" onclick="go(61)">·62</a>
+            </li>
+            <li>
+              <a onclick="go(58)">Deletion</a>
+              <a class="m" onclick="go(59)">·60</a>
+              <a class="m" onclick="go(60)">·61</a>
+            </li>
+            <li>
+              <a onclick="go(62)">Header linked lists</a>
+              <a class="m" onclick="go(63)">·64</a>
+            </li>
+            <li>
+              <a onclick="go(64)">Two-way lists</a>
+              <a class="m" onclick="go(65)">·66</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <p class="m r">
+        Tap ·N to open the N-th slide of a topic. Press O or the ☰ button any
+        time to return here.
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Elementary data organization</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Elementary Data Organization</b>: in <b>which</b> and
+          <b>how many formats</b> data can be stored.
+        </div>
+        <div class="c r">
+          <b>Data</b> = a value or a set of values. The term indicates both the
+          <b>singular</b> form (<b>data item</b>) and the <b>plural</b> form (<b
+            >group items</b
+          >).
+        </div>
+        <div class="c r">
+          <b>Elementary items</b>: data items that cannot be divided into
+          sub-items. <b>Group items are NOT elementary items</b> — they can be
+          divided into sub-items.
+        </div>
+        <div class="c r">
+          Example: <b>Name</b> → group item (not an elementary item) → first
+          name – middle name – last name. <b>Roll</b> → data item → single item.
+        </div>
+        <div class="c r">
+          <b>Data vs Information</b>: data is just a value; information is a
+          value with significance or importance.
+        </div>
+      </div>
+      <div class="r" style="margin: 0.5em 0">
+        <b>Flow:</b> <span class="ch m">Data</span> →
+        <span class="ch m">Data type</span> → <span class="ch m">Entity</span> →
+        <span class="ch m">Attributes</span> →
+        <span class="ch m">Information</span> &nbsp; (<span class="ch"
+          >Field</span
+        >
+        → <span class="ch">Record</span>)
+      </div>
+      <table class="r">
+        <tr>
+          <th>Example</th>
+          <th>Kind</th>
+          <th>Is it elementary?</th>
+          <th>Parts</th>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>group item</td>
+          <td>No — can be divided</td>
+          <td>first name – middle name – last name</td>
+        </tr>
+        <tr>
+          <td>Roll</td>
+          <td>data item (single)</td>
+          <td>Yes</td>
+          <td>—</td>
+        </tr>
+      </table>
+    </section>
+    <section class="s">
+      <h2 class="r">Fields, records &amp; files</h2>
+      <div class="g">
+        <div class="c r">
+          A collection of data is organized into a hierarchy of
+          <b>fields</b> (attributes) → <b>records</b> (entity) →
+          <b>files</b> (entity set).
+        </div>
+        <div class="c r">
+          <b>Attributes</b> → the information in each section of a column, like
+          ID, Name, Age.
+        </div>
+        <div class="c r">
+          <b>Entity</b> → the <b>information of each row</b>, like 001 Abid 27.
+          (Something that has certain attributes or properties which may be
+          assigned values.)
+        </div>
+        <div class="c r">
+          <b>Entity set</b> → a group of entities makes an entity set, like the
+          full table. (Entities with similar attributes constitute an entity
+          set.)
+        </div>
+        <div class="c r">
+          <b>Domain of an attribute</b> → the range of attribute values of an
+          entity set.<br /><b>Domain</b> is a set of all possible attribute
+          values.
+        </div>
+        <div class="c r">
+          <b>Primary key</b> → a certain attribute value that can specify or
+          determine the entity of a file (entity set), like ID (unique for each
+          entity).<br />The values k₁, k₂, … in such a field (attribute) are
+          called <b>keys</b> or <b>key values</b>.
+        </div>
+      </div>
+      <table class="r">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Age</th>
+        </tr>
+        <tr>
+          <td>001</td>
+          <td>Abid</td>
+          <td>27</td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Adib</td>
+          <td>25</td>
+        </tr>
+      </table>
+    </section>
+    <section class="s">
+      <h2 class="r">Information</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Information</b> → data with its attributes; meaningful data or
+          <b>processed data</b>.
+        </div>
+        <div class="c r">
+          <b>Data → procedure to process data → Information.</b>
+        </div>
+        <div class="c r">
+          Example: <code>34</code> → <b>data</b>.<br />“34 is the age of a
+          person” → <b>information</b> (the data with its meaning/attribute).
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Data types &amp; Abstract Data Type (ADT)</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Data type</b>: a term which refers to the kind of data that may
+          appear in computation. Two kinds: <b>built-in</b> and <b>abstract</b>.
+        </div>
+        <div class="c r">
+          <b>Built-in</b>: with every programming language there is a set of
+          data types called built-in data types — int, float, char, double,
+          bool, etc.
+        </div>
+        <div class="c r">
+          <b>Abstract</b>: the programmer’s own (created) data type is termed an
+          <b>abstract data type</b> or <b>user-defined data type</b>. It can be
+          created using a structure / class (in C/C++).
+        </div>
+        <div class="c r">
+          <b>ADT = Abstract Data Type</b>: a type (or class) for objects whose
+          behavior is defined by a set of values and a set of operations.
+        </div>
+        <div class="c r">
+          <b>In simple words</b>: an ADT tells <i>what</i> data it holds and
+          <i>what</i> operations you can do (e.g. a Stack: push, pop) — but not
+          <i>how</i> it is coded or stored in memory. The ADT definition
+          mentions what operations are to be performed but not how they are
+          implemented; it does not specify how data will be organized in memory
+          or what algorithms will be used. That is why it is called “abstract”:
+          it gives an <b>implementation-independent view</b>.
+        </div>
+        <div class="c r">
+          <b>Abstraction</b> = the process of providing only the essentials and
+          hiding the details.
+        </div>
+      </div>
+      <pre class="r">
+struct Student { int roll; char name[20]; };   // user-defined type (ADT-style)
+// Stack ADT: values = list of items, operations = push(x), pop(), top(), isEmpty()</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Data structure &amp; algorithm</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Data structure</b>: the logical or mathematical model of a
+          particular organization of data. The choice of a data model depends on
+          two considerations: (1) it must reflect the actual relationships of
+          the data in the real world; (2) it should be simple enough that one
+          can effectively process the data when necessary.
+        </div>
+        <div class="c r">
+          <b>Algorithm</b>: a finite set of steps, written in order, to solve a
+          problem. Not a complete code or program — just the core logic of a
+          program. Written as <b>pseudo code</b> or <b>flow chart</b>.
+        </div>
+        <div class="c r">
+          <b>Algorithm analysis</b>: the process of comparing two algorithms,
+          measured on the basis of <b>time</b> and <b>space</b> complexity.
+          There are <b>2 types</b>: A priori and A posteriori.
+        </div>
+      </div>
+      <div class="g">
+        <div class="c r">
+          <b>A priori analysis</b><br />Analysis <b>before</b> execution of the
+          algorithm.<br />Gives an <b>approximate</b> value.
+        </div>
+        <div class="c r">
+          <b>A posteriori analysis</b><br />Analysis <b>after</b> execution of
+          the algorithm.<br />Gives the <b>exact</b> value.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Classification of data structures</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Linear data structure</b>: all the elements form a sequence or
+          maintain a linear ordering.
+        </div>
+        <div class="c r">
+          <b>Non-linear data structure</b>: no such sequence of elements is
+          found; all the elements are distributed over a plane.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 640 175"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <rect x="250" y="4" width="140" height="26" rx="6" />
+          <text x="320" y="21">Data structure</text>
+          <line x1="320" y1="30" x2="160" y2="55" />
+          <line x1="320" y1="30" x2="480" y2="55" />
+          <rect x="100" y="55" width="120" height="26" rx="6" />
+          <text x="160" y="72">Linear</text>
+          <rect x="420" y="55" width="120" height="26" rx="6" />
+          <text x="480" y="72">Non-linear</text>
+          <line x1="160" y1="81" x2="45" y2="120" />
+          <rect x="10" y="120" width="70" height="26" rx="6" />
+          <text x="45" y="137">Array</text>
+          <line x1="160" y1="81" x2="125" y2="120" />
+          <rect x="90" y="120" width="70" height="26" rx="6" />
+          <text x="125" y="137">Linked list</text>
+          <line x1="160" y1="81" x2="205" y2="120" />
+          <rect x="170" y="120" width="70" height="26" rx="6" />
+          <text x="205" y="137">Stack</text>
+          <line x1="160" y1="81" x2="285" y2="120" />
+          <rect x="250" y="120" width="70" height="26" rx="6" />
+          <text x="285" y="137">Queue</text>
+          <line x1="480" y1="81" x2="455" y2="120" />
+          <rect x="420" y="120" width="70" height="26" rx="6" />
+          <text x="455" y="137">Tree</text>
+          <line x1="480" y1="81" x2="535" y2="120" />
+          <rect x="500" y="120" width="70" height="26" rx="6" />
+          <text x="535" y="137">Graph</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Array (1-D and multi-dimensional)</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Array</b>: a finite, ordered collection of homogeneous data
+          elements. Ex: an array of all int.
+        </div>
+        <div class="c r">
+          Two types: <b>one-dimensional</b> (linear) and
+          <b>multi-dimensional</b> (2D, 3D, etc.).
+        </div>
+        <div class="c r">
+          <b>One-dimensional array</b>: a list of a finite number n of (similar)
+          data elements, referenced respectively by a set of n consecutive
+          numbers (0, 1, 2, …, n−1).
+        </div>
+        <div class="c r">
+          <b>Elements</b>: if A is the name of a 1D array →
+          <code>A[0], A[1], A[2], … , A[n−1]</code>.
+        </div>
+        <div class="c r">
+          <b>Note</b>: in the data structure course we will be reading the
+          elements from 1 to n → <code>A[1], A[2], … , A[n]</code>.
+        </div>
+        <div class="c r">
+          The number K in A[K] is called the <b>subscript</b> and A[K] is called
+          the <b>subscripted variable</b>.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 328 148"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            General definition: n = 5 elements, A[0] … A[n−1]
+          </text>
+          <rect x="10" y="18" width="56" height="28" />
+          <text x="38" y="37">A[0]</text>
+          <text x="38" y="60" font-size="10" style="fill: var(--mut)">0</text>
+          <rect x="66" y="18" width="56" height="28" />
+          <text x="94" y="37">A[1]</text>
+          <text x="94" y="60" font-size="10" style="fill: var(--mut)">1</text>
+          <rect x="122" y="18" width="56" height="28" />
+          <text x="150" y="37">A[2]</text>
+          <text x="150" y="60" font-size="10" style="fill: var(--mut)">2</text>
+          <rect x="178" y="18" width="56" height="28" />
+          <text x="206" y="37">A[3]</text>
+          <text x="206" y="60" font-size="10" style="fill: var(--mut)">3</text>
+          <rect x="234" y="18" width="56" height="28" />
+          <text x="262" y="37">A[4]</text>
+          <text x="262" y="60" font-size="10" style="fill: var(--mut)">4</text>
+          <text
+            x="4"
+            y="86"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            In this course (read from 1 to n): A[1] … A[n]
+          </text>
+          <rect x="10" y="92" width="56" height="28" />
+          <text x="38" y="111">A[1]</text>
+          <text x="38" y="134" font-size="10" style="fill: var(--mut)">1</text>
+          <rect x="66" y="92" width="56" height="28" />
+          <text x="94" y="111">A[2]</text>
+          <text x="94" y="134" font-size="10" style="fill: var(--mut)">2</text>
+          <rect x="122" y="92" width="56" height="28" />
+          <text x="150" y="111">A[3]</text>
+          <text x="150" y="134" font-size="10" style="fill: var(--mut)">3</text>
+          <rect x="178" y="92" width="56" height="28" />
+          <text x="206" y="111">A[4]</text>
+          <text x="206" y="134" font-size="10" style="fill: var(--mut)">4</text>
+          <rect x="234" y="92" width="56" height="28" />
+          <text x="262" y="111">A[5]</text>
+          <text x="262" y="134" font-size="10" style="fill: var(--mut)">5</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Linked list — array vs linked list</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Array</b> (10, 20, 100, 50, 3): only the values are kept; they are
+          stored side by side in consecutive memory locations.
+        </div>
+        <div class="c r">
+          <b>Linked list</b>: the value <i>and</i> an address are kept; elements
+          need not be adjacent in memory.
+        </div>
+        <div class="c r">
+          <b>Linked list</b> = an ordered collection of finite (n), homogeneous
+          (similar) data elements called <b>nodes</b>, where linear order is
+          maintained by means of links or pointers.
+        </div>
+        <div class="c r">
+          <b>Every node contains</b>: <b>1st part</b> — the information or value
+          of the element. <b>2nd part</b> (known as <b>link field</b> or
+          <b>pointer field</b>) — contains the address of the next node.
+        </div>
+        <div class="c r">
+          <b>Special pointers</b>: <b>Start</b> (or head) — contains the address
+          of the first node. <b>Null pointer</b> (✕) — a special value that
+          indicates the end of the list.
+        </div>
+      </div>
+      <svg class="r" viewBox="0 0 300 74" style="width: 100%; max-height: 46vh">
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Array — values only, side by side
+          </text>
+          <rect x="10" y="18" width="46" height="28" />
+          <text x="33" y="37">10</text>
+          <text x="33" y="60" font-size="10" style="fill: var(--mut)">0</text>
+          <rect x="56" y="18" width="46" height="28" />
+          <text x="79" y="37">20</text>
+          <text x="79" y="60" font-size="10" style="fill: var(--mut)">1</text>
+          <rect x="102" y="18" width="46" height="28" />
+          <text x="125" y="37">100</text>
+          <text x="125" y="60" font-size="10" style="fill: var(--mut)">2</text>
+          <rect x="148" y="18" width="46" height="28" />
+          <text x="171" y="37">50</text>
+          <text x="171" y="60" font-size="10" style="fill: var(--mut)">3</text>
+          <rect x="194" y="18" width="46" height="28" />
+          <text x="217" y="37">3</text>
+          <text x="217" y="60" font-size="10" style="fill: var(--mut)">4</text>
+        </g></svg
+      ><svg
+        class="r"
+        viewBox="0 0 666 68"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Linked list — each node: value | address of next
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">10</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">20</text>
+          <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="31" x2="312" y2="31" />
+          <rect x="312" y="18" width="96" height="26" />
+          <line x1="372" y1="18" x2="372" y2="44" />
+          <text x="342" y="35">100</text>
+          <circle cx="390" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="390" y1="31" x2="430" y2="31" />
+          <rect x="430" y="18" width="96" height="26" />
+          <line x1="490" y1="18" x2="490" y2="44" />
+          <text x="460" y="35">50</text>
+          <circle cx="508" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="508" y1="31" x2="548" y2="31" />
+          <rect x="548" y="18" width="96" height="26" />
+          <line x1="608" y1="18" x2="608" y2="44" />
+          <text x="578" y="35">3</text>
+          <text x="626" y="36" font-size="14">✕</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Stack, queue, tree, graph</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Stack</b> — a “last-in first-out” (LIFO) system: an ordered
+          collection of homogeneous data elements where data insertion and
+          deletion take place only at one end, called <b>Top</b>. Ex: a stack of
+          dishes. Inserting 4→3→2→1 and deleting 1→2→3→4: we can’t take a dish
+          from the middle or last.
+        </div>
+        <div class="c r">
+          <b>Queue</b> — a “first-in first-out” (FIFO) system: an ordered
+          collection of homogeneous data elements where deletion can only be at
+          the <b>front</b> end of the list and insertion only at the
+          <b>rear</b> end. Ex: people in a line at a bank counter.
+        </div>
+        <div class="c r">
+          <b>Tree</b>: a data structure that reflects hierarchical relationship
+          between various elements. Ex: hierarchical relation in a company.
+        </div>
+        <div class="c r">
+          <b>Graph</b>: a data structure that reflects a relationship between
+          pairs of elements which is not necessarily hierarchical in nature. Ex:
+          airline flights between cities.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 800 190"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <g>
+            <text x="95" y="14">Stack (LIFO)</text>
+            <rect x="40" y="28" width="60" height="26" rx="0" />
+            <text x="70" y="45">1</text>
+            <rect x="40" y="56" width="60" height="26" rx="0" />
+            <text x="70" y="73">2</text>
+            <rect x="40" y="84" width="60" height="26" rx="0" />
+            <text x="70" y="101">3</text>
+            <rect x="40" y="112" width="60" height="26" rx="0" />
+            <text x="70" y="129">4</text>
+            <text x="60" y="150" style="fill: var(--b)">
+              in ↓ / out ↑ at TOP
+            </text>
+            <text x="130" y="46" text-anchor="start" style="fill: var(--b)">
+              ◄ TOP
+            </text>
+          </g>
+          <g transform="translate(200,0)">
+            <text x="100" y="14">Queue (FIFO)</text>
+            <rect x="10" y="60" width="48" height="26" rx="0" />
+            <text x="34" y="77">1</text>
+            <rect x="58" y="60" width="48" height="26" rx="0" />
+            <text x="82" y="77">2</text>
+            <rect x="106" y="60" width="48" height="26" rx="0" />
+            <text x="130" y="77">3</text>
+            <rect x="154" y="60" width="48" height="26" rx="0" />
+            <text x="178" y="77">4</text>
+            <text x="10" y="110" text-anchor="start" style="fill: var(--b)">
+              FRONT: delete ←
+            </text>
+            <text x="200" y="110" text-anchor="end" style="fill: var(--b)">
+              → insert: REAR
+            </text>
+          </g>
+          <g transform="translate(430,0)">
+            <text x="90" y="14">Tree (hierarchy)</text>
+            <rect x="50" y="24" width="80" height="26" rx="0" />
+            <text x="90" y="41">Manager</text>
+            <line x1="90" y1="50" x2="40" y2="80" />
+            <line x1="90" y1="50" x2="140" y2="80" />
+            <rect x="0" y="80" width="80" height="26" rx="0" />
+            <text x="40" y="97">Lead A</text>
+            <rect x="100" y="80" width="80" height="26" rx="0" />
+            <text x="140" y="97">Lead B</text>
+            <line x1="40" y1="106" x2="20" y2="140" />
+            <line x1="40" y1="106" x2="80" y2="140" />
+            <rect x="0" y="140" width="40" height="26" rx="0" />
+            <text x="20" y="157">S1</text>
+            <rect x="60" y="140" width="40" height="26" rx="0" />
+            <text x="80" y="157">S2</text>
+          </g>
+          <g transform="translate(640,0)">
+            <text x="70" y="14">Graph (flights)</text>
+            <circle cx="30" cy="60" r="16" />
+            <circle cx="120" cy="50" r="16" />
+            <circle cx="40" cy="140" r="16" />
+            <circle cx="130" cy="140" r="16" />
+            <line x1="30" y1="60" x2="120" y2="50" />
+            <line x1="30" y1="60" x2="40" y2="140" />
+            <line x1="120" y1="50" x2="130" y2="140" />
+            <line x1="40" y1="140" x2="130" y2="140" />
+            <line x1="30" y1="60" x2="130" y2="140" />
+            <text x="30" y="64">A</text>
+            <text x="120" y="54">B</text>
+            <text x="40" y="144">C</text>
+            <text x="130" y="144">D</text>
+          </g>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Data structure operations</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Traversing</b>: processing (traveling) each element in the list.
+        </div>
+        <div class="c r">
+          <b>Search</b>: finding the location of the element with a given value,
+          or the record with a given key.
+        </div>
+        <div class="c r">
+          <b>Insertion</b>: adding a new element to the data structure.
+        </div>
+        <div class="c r"><b>Deletion</b>: removing an element.</div>
+        <div class="c r">
+          <b>Sorting</b>: arranging the elements in some type of order. (Applies
+          to array/list-type structures; not to graph, stack, queue, tree.)
+        </div>
+        <div class="c r">
+          <b>Merging</b>: combining two sorted lists into a single list.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Complexity of an algorithm</h2>
+      <div class="g">
+        <div class="c r">
+          An <b>algorithm</b> is a finite step-by-step list of well-defined
+          instructions for solving a particular problem. The time and space it
+          uses are two major measures of its efficiency.
+        </div>
+        <div class="c r">
+          The <b>complexity</b> of an algorithm M is a function f(n) which gives
+          the running time (<b>time complexity</b>) and storage space (<b
+            >space complexity</b
+          >) requirement of the algorithm in terms of the size n of the input
+          data.
+        </div>
+        <div class="c r">
+          <b>Time complexity</b>: how long a program takes to run. It is
+          measured not in seconds but in number of steps, e.g. O(n), O(1).
+          Summing 1…N with a loop takes O(n); with a very large number it takes
+          too much time. <b>O(n)</b>: input n → n tasks. <b>O(1)</b>: input is n
+          but the work is done in one line / one fixed way (no loop).
+          <b>O(n²)</b>: a loop containing a second loop.
+        </div>
+        <div class="c r">
+          <b>Space complexity</b>: the storage required by an algorithm is a
+          simple multiple of the data size n, or the size of the input
+          variables.
+        </div>
+      </div>
+      <pre class="r">
+// prime check: loop only up to sqrt(n)
+bool prime = true;
+for (int i = 2; i &lt;= sqrt(n); i++) {
+    if (n % i == 0) { prime = false; break; }
+}
+cout &lt;&lt; (prime ? &quot;prime&quot; : &quot;not prime&quot;);   // O(sqrt n) -- far faster than looping i &lt; n, which is O(n)</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Time–space trade-off</h2>
+      <div class="g">
+        <div class="c r">
+          The <b>time–space trade-off</b> refers to a choice between algorithmic
+          solutions of a data-processing problem that lets one
+          <i>decrease</i> the running time of a solution by
+          <i>increasing</i> the space to store the data, and vice-versa.
+        </div>
+        <div class="c r">
+          <b>Swap with temp</b>: 3 tasks, 3 variables → less time, more space.
+        </div>
+        <div class="c r">
+          <b>Swap without temp</b>: 6 tasks, 2 variables → more time, less
+          space. Not every program is allowed to / uses this trade-off.
+        </div>
+      </div>
+      <pre class="r">
+int a=5, b=2, temp;        int a=5, b=2;
+temp = a;                    a = a + b;
+a = b;                       b = a - b;
+b = temp;                    a = a - b;</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Floor, ceiling, integer &amp; absolute value</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Floor</b> ⌊x⌋: the greatest integer that does not exceed x. ⌊1.2⌋ =
+          1 (nearest integer below); ⌊−3.5⌋ = −4.
+        </div>
+        <div class="c r">
+          <b>Ceiling</b> ⌈x⌉: the least integer that is not less than x. ⌈1.2⌉ =
+          2 (nearest integer above); ⌈−3.5⌉ = −3.
+        </div>
+        <div class="c r">
+          If x is an integer, ⌊x⌋ = ⌈x⌉; otherwise ⌊x⌋ + 1 = ⌈x⌉.
+        </div>
+        <div class="c r">
+          <b>Integer value</b> INT(x) (typecast): converts x to an integer by
+          deleting (truncating) the fractional part. INT(3.14) = 3, INT(−8.5) =
+          −8.
+        </div>
+        <div class="c r">
+          <b>Absolute value</b> ABS(x) or |x|: the greater of x and −x. |−15| =
+          15, |3| = 3, ABS(−8.5) = 8.5.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Remainder function &amp; congruence</h2>
+      <div class="g">
+        <div class="c r">
+          Let k be an integer and M a positive integer. <b>k (mod M)</b> (also k
+          % M) = the integer remainder when k is divided by M. 5 % 3 = 2 because
+          5 = 1·3 + 2.
+        </div>
+        <div class="c r">
+          So k (mod M) = r, a unique integer with 0 ≤ r &lt; M, and
+          <code>k = Mq + r</code> (q an integer).
+        </div>
+        <div class="c r">
+          <b>Congruence</b>: a ≡ b (mod M) iff M divides (a − b) — both leave
+          the same remainder on division by M.
+        </div>
+        <div class="c r">
+          Examples: 15 ≡ 20 (mod 5); 17 ≡ 22 (mod 5); 22 ≡ 2 (mod 5).
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Factorial, Fibonacci, permutation &amp; combination</h2>
+      <div class="g">
+        <div class="c r">
+          <b>n!</b> = 1×2×3×…×(n−2)×(n−1)×n. int covers 0! to 12!; long long
+          covers up to 20!; more needs a string.
+        </div>
+        <div class="c r">
+          <b>Fibonacci</b>: 0, 1, 1, 2, 3, 5, 8, … with F<sub>n</sub> = F<sub
+            >n−1</sub
+          >
+          + F<sub>n−2</sub>.
+        </div>
+        <div class="c r">
+          <b>Permutation</b> (order matters; choosing and ordering): nPr =
+          n!/(n−r)!.
+        </div>
+        <div class="c r">
+          <b>Combination</b> (order does not matter; choosing r boxes from n):
+          nCr = n!/(r!(n−r)!).
+        </div>
+        <div class="c r">
+          Example with letters R B P N, choosing 3: nPr = 4×6 = 24 ways (each
+          choice like RBN has 6 orderings: RBN, RNB, NRB, NBR, BNR, BRN). nCr =
+          4 ways: RBN, RPN, RBP, BPN.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Summation, exponents &amp; logarithms</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Σ</b>: 1+2+3+…+n = n(n+1)/2 · 1²+2²+…+n² = n(n+1)(2n+1)/6 · Σk³ =
+          (n(n+1)/2)².
+        </div>
+        <div class="c r"><b>Exponent</b>: aⁿ = a×a×…×a (n times).</div>
+        <div class="c r">
+          <b>Logarithm</b>: bʸ = x ⇔ y = log<sub>b</sub> x — how many times x
+          can be divided by b until it reaches 1. log₁₀ 1000: 1000/10 = 100/10 =
+          10/10 = 1 → 3 divisions → 3. log₂ 8 = 3 (2×2×2 = 2³).
+        </div>
+        <div class="c r">
+          <b>Common</b> log (base 10), <b>natural</b> ln (base e),
+          <b>binary</b> lg or log₂ (base 2). In CSE we normally use binary
+          logarithms: log x means log₂ x.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Algorithmic notation</h2>
+      <div class="g">
+        <div class="c r">
+          An algorithm is a finite step-by-step list of well-defined
+          instructions for solving a particular problem. Its formal presentation
+          has <b>two parts</b>: first a paragraph telling the purpose,
+          identifying the variables and listing the input data; second the list
+          of steps to be executed.
+        </div>
+        <div class="c r">
+          <b>Steps, control, exit</b>: steps execute one after the other
+          beginning with Step 1 unless indicated otherwise. Control may be
+          transferred by “Go to Step n”. Several statements in one step run left
+          to right. The algorithm is complete when <b>Exit</b> is met.
+        </div>
+        <div class="c r">
+          <b>Comments</b>: each step may carry a bracketed comment giving its
+          main purpose. <b>Variable names</b> use capital letters; single
+          letters (upper/lower) serve as counters or subscripts.
+        </div>
+        <div class="c r">
+          <b>Assignment</b>: dots-equal <b>:=</b> (some texts use ← or =).
+          <b>Input</b>: Read: variable names. <b>Output</b>: Write: messages
+          and/or variable names. An algorithm is also known as a procedure or
+          pseudocode.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Algorithm: largest element in an array</h2>
+      <p class="r">
+        A nonempty array DATA with N numerical values is given. The algorithm
+        finds the location LOC and the value MAX of the largest element; K is a
+        counter.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm 1: Largest element in an array (with &quot;Go to&quot;)
+Step 1. [Initialize] Set K := 1, LOC := 1 and MAX := DATA[1].
+Step 2. [Increment counter] Set K := K + 1.
+Step 3. [Test counter] If K &gt; N, then:
+            Write: LOC, MAX and Exit.
+Step 4. [Compare and update] If MAX &lt; DATA[K], then:
+            Set LOC := K and MAX := DATA[K].
+Step 5. [Repeat loop] Go to Step 2.</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+Algorithm 2: Largest element in an array (Repeat-while)
+Step 1. [Initialize] Set K := 1, LOC := 1 and MAX := DATA[1].
+Step 2. Repeat Steps 3 and 4 while K &lt;= N:
+Step 3.     If MAX &lt; DATA[K], then:
+                Set LOC := K and MAX := DATA[K].
+Step 4.     Set K := K + 1.
+        [End of Step 2 loop]
+Step 5. Write: LOC, MAX.
+Step 6. Exit.</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Flowchart: largest element</h2>
+      <p class="r">
+        The loop returns to <b>K := K + 1</b> from both the “No” of
+        <b>MAX &lt; DATA[K]</b> and from the update box.
+      </p>
+      <svg
+        class="r"
+        viewBox="0 0 660 240"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <rect x="330" y="2" width="100" height="26" rx="13" />
+          <text x="380" y="19">Start</text>
+          <line class="a" x1="380" y1="28" x2="380" y2="44" />
+          <rect x="260" y="44" width="240" height="26" rx="0" />
+          <text x="380" y="61">K := 1, LOC := 1, MAX := DATA[1]</text>
+          <line class="a" x1="380" y1="70" x2="380" y2="94" />
+          <rect x="320" y="94" width="120" height="26" rx="0" />
+          <text x="380" y="111">K := K + 1</text>
+          <line class="a" x1="380" y1="120" x2="380" y2="136" />
+          <polygon points="390,136 442,160 390,184 338,160" />
+          <text x="390" y="164">is K &gt; N ?</text>
+          <text x="452" y="152" style="fill: var(--b)">Yes</text>
+          <line class="a" x1="442" y1="160" x2="502" y2="160" />
+          <polygon points="510,146 650,146 640,174 500,174" />
+          <text x="575" y="164">Write: LOC, MAX</text>
+          <line class="a" x1="575" y1="174" x2="575" y2="200" />
+          <rect x="525" y="200" width="100" height="26" rx="13" />
+          <text x="575" y="217">Stop</text>
+          <line class="a" x1="338" y1="160" x2="295" y2="160" />
+          <text x="305" y="152" style="fill: var(--b)">No</text>
+          <polygon points="215,134 293,160 215,186 137,160" />
+          <text x="215" y="164">is MAX &lt; DATA[K] ?</text>
+          <line x1="215" y1="134" x2="215" y2="82" />
+          <text x="225" y="112" style="fill: var(--b)">No</text>
+          <line x1="137" y1="160" x2="85" y2="160" />
+          <text x="105" y="153" style="fill: var(--b)">Yes</text>
+          <line class="a" x1="85" y1="160" x2="85" y2="128" />
+          <rect x="0" y="100" width="170" height="26" rx="6" />
+          <text x="85" y="117">LOC := K, MAX := DATA[K]</text>
+          <line class="a" x1="85" y1="100" x2="85" y2="84" />
+          <line class="a" x1="85" y1="82" x2="386" y2="82" />
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Control structures: sequence &amp; selection</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Three types of logic / flow of control</b>: sequence (sequential
+          flow), selection (conditional), iteration (repetitive).
+        </div>
+        <div class="c r">
+          <b>Sequence logic</b>: unless instructions say otherwise, modules run
+          in clear order — shown explicitly by numbered steps or implicitly by
+          the order modules are written. Most processing, even of complex
+          problems, follows this initial flow pattern.
+        </div>
+        <div class="c r">
+          <b>Selection logic</b> uses conditions to select one of several
+          alternative modules; the structures are called conditional or
+          <b>if structures</b>. Three types: single, double, multiple
+          alternative.
+        </div>
+        <div class="c r">
+          <b>Single</b>: If condition, then: [Module A] [End of if structure] —
+          if true A runs, otherwise A is skipped and control moves on.
+          <b>Double</b>: If condition, then: [A] Else: [B] — A if true, B if
+          false.
+        </div>
+      </div>
+      <pre class="r">
+Multiple alternatives:
+If condition(1), then: [Module A1]
+Else if condition(2), then: [Module A2]
+...
+Else if condition(n), then: [Module An]
+Else: [Module B]
+[End of if structure]</pre
+      >
+      <p class="r">
+        Only <b>one</b> module runs: if condition (1) is true A₁ runs; if false,
+        condition (2) is checked, and so on; if all conditions are false, Module
+        B runs.
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Flowcharts of selection &amp; iteration</h2>
+      <svg
+        class="r"
+        viewBox="0 0 900 185"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <polygon points="80,6 132,30 80,54 28,30" />
+          <text x="80" y="34">Condition?</text>
+          <text x="92" y="62" style="fill: var(--b)">Yes</text>
+          <line class="a" x1="80" y1="54" x2="80" y2="70" />
+          <rect x="30" y="70" width="100" height="26" rx="0" />
+          <text x="80" y="87">Module A</text>
+          <line x1="132" y1="30" x2="170" y2="30" />
+          <text x="150" y="24" style="fill: var(--b)">No</text>
+          <line x1="170" y1="30" x2="170" y2="120" />
+          <line x1="80" y1="96" x2="80" y2="120" />
+          <line class="a" x1="170" y1="120" x2="82" y2="120" />
+          <line class="a" x1="80" y1="120" x2="80" y2="142" />
+          <text x="90" y="165" style="fill: var(--mut)">
+            Single alternative
+          </text>
+          <g transform="translate(230,0)">
+            <polygon points="80,6 132,30 80,54 28,30" />
+            <text x="80" y="34">Condition?</text>
+            <text x="92" y="62" style="fill: var(--b)">Yes</text>
+            <line class="a" x1="80" y1="54" x2="80" y2="70" />
+            <rect x="30" y="70" width="100" height="26" rx="0" />
+            <text x="80" y="87">Module A</text>
+            <line x1="132" y1="30" x2="190" y2="30" />
+            <text x="160" y="24" style="fill: var(--b)">No</text>
+            <line class="a" x1="190" y1="30" x2="190" y2="70" />
+            <rect x="150" y="70" width="80" height="26" rx="0" />
+            <text x="190" y="87">Module B</text>
+            <line x1="80" y1="96" x2="80" y2="120" />
+            <line x1="190" y1="96" x2="190" y2="120" />
+            <line class="a" x1="190" y1="120" x2="82" y2="120" />
+            <line class="a" x1="80" y1="120" x2="80" y2="142" />
+            <text x="130" y="165" style="fill: var(--mut)">
+              Double alternative
+            </text>
+          </g>
+          <g transform="translate(470,0)">
+            <rect x="30" y="0" width="100" height="26" rx="0" />
+            <text x="80" y="17">k = R</text>
+            <line class="a" x1="80" y1="26" x2="80" y2="38" />
+            <polygon points="80,38 132,62 80,86 28,62" />
+            <text x="80" y="66">k &gt; S ?</text>
+            <text x="92" y="96" style="fill: var(--b)">No</text>
+            <line class="a" x1="80" y1="86" x2="80" y2="100" />
+            <rect x="30" y="100" width="100" height="26" rx="0" />
+            <text x="80" y="117">Module</text>
+            <line class="a" x1="80" y1="126" x2="80" y2="136" />
+            <rect x="30" y="136" width="100" height="26" rx="0" />
+            <text x="80" y="153">k = k + T</text>
+            <line x1="30" y1="149" x2="8" y2="149" />
+            <line x1="8" y1="149" x2="8" y2="62" />
+            <line class="a" x1="8" y1="62" x2="28" y2="62" />
+            <line class="a" x1="132" y1="62" x2="175" y2="62" />
+            <text x="150" y="56" style="fill: var(--b)">Yes</text>
+            <text x="90" y="178" style="fill: var(--mut)">Repeat-for</text>
+          </g>
+          <g transform="translate(720,0)">
+            <polygon points="80,6 132,30 80,54 28,30" />
+            <text x="80" y="34">Condition?</text>
+            <text x="92" y="62" style="fill: var(--b)">Yes</text>
+            <line class="a" x1="80" y1="54" x2="80" y2="70" />
+            <rect x="30" y="70" width="100" height="26" rx="0" />
+            <text x="80" y="87">Module</text>
+            <line x1="30" y1="83" x2="8" y2="83" />
+            <line x1="8" y1="83" x2="8" y2="30" />
+            <line class="a" x1="8" y1="30" x2="28" y2="30" />
+            <line class="a" x1="132" y1="30" x2="165" y2="30" />
+            <text x="148" y="24" style="fill: var(--b)">No</text>
+            <text x="90" y="130" style="fill: var(--mut)">Repeat-while</text>
+          </g>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Iteration logic (repetitive flow)</h2>
+      <div class="g">
+        <div class="c r">
+          Two types: the <b>Repeat-for</b> loop and the
+          <b>Repeat-while</b> loop. Each begins with a Repeat statement followed
+          by a module called the <b>body</b> of the loop.
+        </div>
+        <div class="c r">
+          <b>Repeat-for</b>:
+          <code>Repeat for k = R to S by T: [Module] [End of loop]</code> — R
+          initial value, S end value, T increment, k control variable.
+        </div>
+        <div class="c r">
+          <b>Repeat-while</b>:
+          <code>Repeat while condition: [Module] [End of loop]</code> — the loop
+          executes until the condition is false.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Algorithm: quadratic equation</h2>
+      <p class="r">
+        Inputs the coefficients A, B, C of a quadratic equation and outputs the
+        real solutions, if any.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Step 1. Read: A, B, C.
+Step 2. Set D := B² − 4AC.
+Step 3. If D &gt; 0, then:
+          (a) Set X1 := (−B + √D)/(2A) and X2 := (−B − √D)/(2A).
+          (b) Write: X1, X2.
+        Else if D = 0, then:
+          (a) Set X := −B/(2A).
+          (b) Write: &#x27;UNIQUE SOLUTION&#x27;, X.
+        Else:
+          Write: &#x27;NO REAL SOLUTION&#x27;.
+        [End of if structure]
+Step 4. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 570 384"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <rect x="150" y="4" width="100" height="26" rx="13" />
+              <text x="200" y="21">Start</text>
+              <line class="a" x1="200" y1="30" x2="200" y2="44" />
+              <rect x="130" y="44" width="140" height="26" rx="0" />
+              <text x="200" y="61">Read: A, B, C</text>
+              <line class="a" x1="200" y1="70" x2="200" y2="84" />
+              <rect x="110" y="84" width="180" height="26" rx="0" />
+              <text x="200" y="101">D := B² − 4AC</text>
+              <line class="a" x1="200" y1="110" x2="200" y2="126" />
+              <polygon points="200,126 252,150 200,174 148,150" />
+              <text x="200" y="154">D &gt; 0 ?</text>
+              <text x="262" y="142" style="fill: var(--b)">Yes</text>
+              <line class="a" x1="252" y1="150" x2="330" y2="150" />
+              <rect x="330" y="137" width="200" height="26" rx="0" />
+              <text x="430" y="154">X1, X2 := (−B ± √D)/(2A)</text>
+              <line class="a" x1="430" y1="163" x2="430" y2="172" />
+              <rect x="330" y="172" width="200" height="26" rx="0" />
+              <text x="430" y="189">Write: X1, X2</text>
+              <line class="a" x1="200" y1="174" x2="200" y2="202" />
+              <text x="208" y="192" style="fill: var(--b)">No</text>
+              <polygon points="200,202 252,226 200,250 148,226" />
+              <text x="200" y="230">D = 0 ?</text>
+              <text x="262" y="218" style="fill: var(--b)">Yes</text>
+              <line class="a" x1="252" y1="226" x2="330" y2="226" />
+              <rect x="330" y="213" width="200" height="26" rx="0" />
+              <text x="430" y="230">X := −B / (2A)</text>
+              <line class="a" x1="430" y1="239" x2="430" y2="248" />
+              <rect x="330" y="248" width="200" height="26" rx="0" />
+              <text x="430" y="265">Write: UNIQUE SOLUTION, X</text>
+              <line class="a" x1="200" y1="250" x2="200" y2="280" />
+              <text x="208" y="270" style="fill: var(--b)">No</text>
+              <rect x="110" y="280" width="180" height="26" rx="0" />
+              <text x="200" y="297">Write: NO REAL SOLUTION</text>
+              <line x1="200" y1="306" x2="200" y2="330" />
+              <line x1="530" y1="185" x2="548" y2="185" />
+              <line x1="530" y1="261" x2="548" y2="261" />
+              <line x1="548" y1="185" x2="548" y2="330" />
+              <line x1="548" y1="330" x2="200" y2="330" />
+              <line class="a" x1="200" y1="330" x2="200" y2="350" />
+              <rect x="150" y="350" width="100" height="26" rx="13" />
+              <text x="200" y="367">Stop</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Subalgorithms</h2>
+      <div class="g">
+        <div class="c r">
+          A <b>subalgorithm</b> (routine / subroutine / function) is a complete
+          and independently defined algorithmic module used (invoked or called)
+          by a main algorithm or by another subalgorithm. It receives values,
+          called <b>arguments</b>, from the originating (calling) algorithm,
+          performs computations, and sends back the result.
+        </div>
+        <div class="c r">
+          It is defined independently so it can be called by many different
+          algorithms, or at different times in the same algorithm. Its relation
+          to an algorithm is like a subprogram to a main program.
+        </div>
+        <div class="c r">
+          <b>Differences</b>: a subalgorithm normally has a heading
+          <code>NAME(PAR₁, PAR₂, …, PARₖ)</code>, and it has a
+          <b>Return</b> statement instead of an Exit statement.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Examples: MEAN and SWITCH</h2>
+      <p class="r">
+        MEAN is the name; A, B, C are parameters; Return puts AVE in parentheses
+        — its value goes back to the calling program. Call:
+        <code>Set TEST := MEAN(T1,T2,T3)</code> — arguments T₁,T₂,T₃ (test
+        scores) transfer to A,B,C; MEAN runs and AVE is assigned to TEST.
+      </p>
+      <p class="r">
+        SWITCH returns two values, which a single return value cannot hold, so
+        it is invoked with a <b>Call</b> statement: B and A replace AAA and BBB,
+        SWITCH does its work, and the values in B and A come back switched.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Function: MEAN(A,B,C)
+  1. Set AVE := (A+B+C)/3.
+  2. Return(AVE).</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+SWITCH(AAA, BBB)
+  1. Set TEMP := AAA, AAA := BBB and BBB := TEMP.
+  2. Return.
+Call SWITCH(B, A)</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Linear arrays</h2>
+      <div class="g">
+        <div class="c r">
+          The elements of a linear array are referenced by an
+          <b>index set</b> of n consecutive numbers and are stored in
+          <b>successive memory locations</b>.
+        </div>
+        <div class="c r">
+          <b>Length</b> (size, number of elements) = UB − LB + 1. Word size w =
+          bytes per element (int = 4, char = 1). LB = lower bound (first index).
+        </div>
+        <div class="c r">
+          <code>LOC(LA[K]) = BASE(LA) + w·(K − LB)</code> — address of the Kth
+          element; BASE(LA) is the address of the first element.
+        </div>
+      </div>
+      <div class="r" id="cal">
+        BASE <input id="b1" size="4" value="200" /> w
+        <input id="b2" size="3" value="4" /> LB
+        <input id="b3" size="5" value="1932" /> K
+        <input id="b4" size="5" value="1965" /> → <b id="lo"></b>
+      </div>
+      <p class="m r">
+        Example: AUTO (int, w = 4), LOC(AUTO[1932]) = 200 → LOC(AUTO[1965]) =
+        200 + 4·33 = 332
+      </p>
+      <svg class="r" viewBox="0 0 429 74" style="width: 100%; max-height: 46vh">
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            AUTO (int, w = 4, BASE = 200): index 1932 … 1965; addresses below
+          </text>
+          <rect x="10" y="18" width="70" height="28" />
+          <text x="45" y="37">1932</text>
+          <text x="45" y="60" font-size="10" style="fill: var(--mut)">200</text>
+          <rect x="80" y="18" width="70" height="28" />
+          <text x="115" y="37">1933</text>
+          <text x="115" y="60" font-size="10" style="fill: var(--mut)">
+            204
+          </text>
+          <rect x="150" y="18" width="70" height="28" />
+          <text x="185" y="37">1934</text>
+          <text x="185" y="60" font-size="10" style="fill: var(--mut)">
+            208
+          </text>
+          <rect x="220" y="18" width="70" height="28" />
+          <text x="255" y="37">…</text>
+          <text x="255" y="60" font-size="10" style="fill: var(--mut)">…</text>
+          <rect
+            x="290"
+            y="18"
+            width="70"
+            height="28"
+            style="fill: var(--b); stroke: var(--b)"
+          />
+          <text x="325" y="37">1965</text>
+          <text x="325" y="60" font-size="10" style="fill: var(--mut)">
+            332
+          </text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Traversing a linear array</h2>
+      <p class="r">
+        Let LA be a linear array with lower bound LB and upper bound UB.
+        Traversing visits every element, applying an operation PROCESS to each.
+      </p>
+      <p class="r">
+        Example: array AUTO records automobiles sold each year 2000–2019.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: Traversing LA (Repeat-while version)
+Step 1. Set K := LB.
+Step 2. Repeat Steps 3 and 4 while K &lt;= UB:
+Step 3.     Apply PROCESS to LA[K].
+Step 4.     Set K := K + 1.
+        [End of loop]
+Step 5. Exit.</pre
+          >
+          <pre class="r">
+Algorithm: Traversing LA (Repeat-for version)
+Step 1. Repeat for K = LB to UB:
+            Apply PROCESS to LA[K].
+        [End of loop]
+Step 2. Exit.</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+Module a: find the number NUM of years in which more than 300 automobiles were sold
+Step 1. Set NUM := 0.
+Step 2. Repeat for K = 2000 to 2019:
+            If AUTO[K] &gt; 300, then:
+                Set NUM := NUM + 1.
+        [End of loop]
+Step 3. Return.</pre
+          >
+          <pre class="r">
+Module b: print each year and the number of automobiles sold in that year
+Step 1. Repeat for K = 2000 to 2019:
+            Write: K, AUTO[K].
+        [End of loop]
+Step 2. Return.</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Inserting into a linear array</h2>
+      <div class="g">
+        <div class="c r">
+          Adding an extra value to an array. If there is enough space: at the
+          end → <code>Arr[n+1] = new element</code>; in the middle → the
+          elements from the target location to the end must be moved downward
+          and the length becomes n+1. If there is not enough space, inserting
+          makes the end value vanish.
+        </div>
+      </div>
+      <p class="r">Time complexity O(n).</p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: INSERT(LA, N, K, ITEM)
+Here LA is a linear array with N elements and K is a positive integer such that K &lt;= N.
+This algorithm inserts an element ITEM into the Kth position in LA.
+Step 1. Set J := N.
+Step 2. Repeat Steps 3 and 4 while J &gt;= K:
+Step 3.     Set LA[J+1] := LA[J].
+Step 4.     Set J := J - 1.
+        [End of loop]
+Step 5. Set LA[K] := ITEM.
+Step 6. Set N := N + 1.
+Step 7. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 530 306"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Insert ITEM = 25 at K = 3 (N = 5, free cell at position 6):
+                shift down from J = N
+              </text>
+              <rect x="10" y="18" width="46" height="28" />
+              <text x="33" y="37">10</text>
+              <text x="33" y="60" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="18" width="46" height="28" />
+              <text x="79" y="37">20</text>
+              <text x="79" y="60" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="18" width="46" height="28" />
+              <text x="125" y="37">30</text>
+              <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="18" width="46" height="28" />
+              <text x="171" y="37">40</text>
+              <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect x="194" y="18" width="46" height="28" />
+              <text x="217" y="37">50</text>
+              <text x="217" y="60" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+              <rect x="240" y="18" width="46" height="28" />
+              <text x="263" y="37"></text>
+              <text x="263" y="60" font-size="10" style="fill: var(--mut)">
+                6
+              </text>
+              <text
+                x="4"
+                y="86"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 5: LA[6] := LA[5]
+              </text>
+              <rect x="10" y="92" width="46" height="28" />
+              <text x="33" y="111">10</text>
+              <rect x="56" y="92" width="46" height="28" />
+              <text x="79" y="111">20</text>
+              <rect x="102" y="92" width="46" height="28" />
+              <text x="125" y="111">30</text>
+              <rect x="148" y="92" width="46" height="28" />
+              <text x="171" y="111">40</text>
+              <rect x="194" y="92" width="46" height="28" />
+              <text x="217" y="111">50</text>
+              <rect
+                x="240"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="263" y="111">50</text>
+              <text
+                x="4"
+                y="144"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 4: LA[5] := LA[4]
+              </text>
+              <rect x="10" y="150" width="46" height="28" />
+              <text x="33" y="169">10</text>
+              <rect x="56" y="150" width="46" height="28" />
+              <text x="79" y="169">20</text>
+              <rect x="102" y="150" width="46" height="28" />
+              <text x="125" y="169">30</text>
+              <rect x="148" y="150" width="46" height="28" />
+              <text x="171" y="169">40</text>
+              <rect
+                x="194"
+                y="150"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="217" y="169">40</text>
+              <rect x="240" y="150" width="46" height="28" />
+              <text x="263" y="169">50</text>
+              <text
+                x="4"
+                y="202"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 3: LA[4] := LA[3]
+              </text>
+              <rect x="10" y="208" width="46" height="28" />
+              <text x="33" y="227">10</text>
+              <rect x="56" y="208" width="46" height="28" />
+              <text x="79" y="227">20</text>
+              <rect x="102" y="208" width="46" height="28" />
+              <text x="125" y="227">30</text>
+              <rect
+                x="148"
+                y="208"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="171" y="227">30</text>
+              <rect x="194" y="208" width="46" height="28" />
+              <text x="217" y="227">40</text>
+              <rect x="240" y="208" width="46" height="28" />
+              <text x="263" y="227">50</text>
+              <text
+                x="4"
+                y="260"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 2 &lt; K: stop. LA[3] := ITEM, N := 6
+              </text>
+              <rect x="10" y="266" width="46" height="28" />
+              <text x="33" y="285">10</text>
+              <rect x="56" y="266" width="46" height="28" />
+              <text x="79" y="285">20</text>
+              <rect
+                x="102"
+                y="266"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="125" y="285">25</text>
+              <rect x="148" y="266" width="46" height="28" />
+              <text x="171" y="285">30</text>
+              <rect x="194" y="266" width="46" height="28" />
+              <text x="217" y="285">40</text>
+              <rect x="240" y="266" width="46" height="28" />
+              <text x="263" y="285">50</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Deleting from a linear array</h2>
+      <div class="g">
+        <div class="c r">
+          Removing one element. At the end → n = n − 1; in the middle → every
+          following element moves one location upward and n = n − 1.
+        </div>
+      </div>
+      <p class="r">Time complexity O(n).</p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: DELETE(LA, N, K, ITEM)
+Here LA is a linear array with N elements and K is a positive integer such that K &lt;= N.
+This algorithm deletes the Kth element from LA.
+Step 1. Set ITEM := LA[K].
+Step 2. Repeat for J = K to N - 1:
+            Set LA[J] := LA[J+1].
+        [End of loop]
+Step 3. Set N := N - 1.
+Step 4. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 300 306"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Delete K = 3 (N = 6): shift up from J = K
+              </text>
+              <rect x="10" y="18" width="46" height="28" />
+              <text x="33" y="37">10</text>
+              <text x="33" y="60" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="18" width="46" height="28" />
+              <text x="79" y="37">20</text>
+              <text x="79" y="60" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect
+                x="102"
+                y="18"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="125" y="37">25</text>
+              <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="18" width="46" height="28" />
+              <text x="171" y="37">30</text>
+              <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect x="194" y="18" width="46" height="28" />
+              <text x="217" y="37">40</text>
+              <text x="217" y="60" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+              <rect x="240" y="18" width="46" height="28" />
+              <text x="263" y="37">50</text>
+              <text x="263" y="60" font-size="10" style="fill: var(--mut)">
+                6
+              </text>
+              <text
+                x="4"
+                y="86"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 3: LA[3] := LA[4]
+              </text>
+              <rect x="10" y="92" width="46" height="28" />
+              <text x="33" y="111">10</text>
+              <rect x="56" y="92" width="46" height="28" />
+              <text x="79" y="111">20</text>
+              <rect
+                x="102"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="125" y="111">30</text>
+              <rect x="148" y="92" width="46" height="28" />
+              <text x="171" y="111">30</text>
+              <rect x="194" y="92" width="46" height="28" />
+              <text x="217" y="111">40</text>
+              <rect x="240" y="92" width="46" height="28" />
+              <text x="263" y="111">50</text>
+              <text
+                x="4"
+                y="144"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 4: LA[4] := LA[5]
+              </text>
+              <rect x="10" y="150" width="46" height="28" />
+              <text x="33" y="169">10</text>
+              <rect x="56" y="150" width="46" height="28" />
+              <text x="79" y="169">20</text>
+              <rect x="102" y="150" width="46" height="28" />
+              <text x="125" y="169">30</text>
+              <rect
+                x="148"
+                y="150"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="171" y="169">40</text>
+              <rect x="194" y="150" width="46" height="28" />
+              <text x="217" y="169">40</text>
+              <rect x="240" y="150" width="46" height="28" />
+              <text x="263" y="169">50</text>
+              <text
+                x="4"
+                y="202"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                J = 5: LA[5] := LA[6]
+              </text>
+              <rect x="10" y="208" width="46" height="28" />
+              <text x="33" y="227">10</text>
+              <rect x="56" y="208" width="46" height="28" />
+              <text x="79" y="227">20</text>
+              <rect x="102" y="208" width="46" height="28" />
+              <text x="125" y="227">30</text>
+              <rect x="148" y="208" width="46" height="28" />
+              <text x="171" y="227">40</text>
+              <rect
+                x="194"
+                y="208"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="217" y="227">50</text>
+              <rect x="240" y="208" width="46" height="28" />
+              <text x="263" y="227">50</text>
+              <text
+                x="4"
+                y="260"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                N := N − 1 = 5
+              </text>
+              <rect x="10" y="266" width="46" height="28" />
+              <text x="33" y="285">10</text>
+              <rect x="56" y="266" width="46" height="28" />
+              <text x="79" y="285">20</text>
+              <rect x="102" y="266" width="46" height="28" />
+              <text x="125" y="285">30</text>
+              <rect x="148" y="266" width="46" height="28" />
+              <text x="171" y="285">40</text>
+              <rect x="194" y="266" width="46" height="28" />
+              <text x="217" y="285">50</text>
+              <rect x="240" y="266" width="46" height="28" />
+              <text x="263" y="285"></text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Bubble sort</h2>
+      <div class="g">
+        <div class="c r">
+          Compare neighbours: if already ordered (small to large) do nothing and
+          move on; if not, swap them. Two loops are needed → <b>O(n²)</b>; in
+          the worst case every index is checked.
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <pre class="r">
+5 10 3 7 9   pass 1: 5 3 7 9 10   pass 2: 3 5 7 9 10   sorted</pre
+          >
+          <pre class="r">
+BUBBLE(DATA, N)   sorts the elements in DATA.
+Step 1. Repeat Steps 2 and 3 for K = 1 to N−1.
+Step 2.   Set PTR := 1.
+Step 3.   Repeat while PTR &lt;= N−K:
+            (a) If DATA[PTR] &gt; DATA[PTR+1], then: Interchange DATA[PTR] and DATA[PTR+1].
+            (b) Set PTR := PTR + 1.
+Step 4. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 498 222"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Sample, positions 1–5: compare neighbours; swap if not ordered
+                small → large
+              </text>
+              <rect x="10" y="18" width="46" height="28" />
+              <text x="33" y="37">5</text>
+              <text x="33" y="60" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="18" width="46" height="28" />
+              <text x="79" y="37">10</text>
+              <text x="79" y="60" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="18" width="46" height="28" />
+              <text x="125" y="37">3</text>
+              <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="18" width="46" height="28" />
+              <text x="171" y="37">7</text>
+              <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect x="194" y="18" width="46" height="28" />
+              <text x="217" y="37">9</text>
+              <text x="217" y="60" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+              <text
+                x="4"
+                y="86"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                After pass 1 (largest 10 reaches the end)
+              </text>
+              <rect x="10" y="92" width="46" height="28" />
+              <text x="33" y="111">5</text>
+              <text x="33" y="134" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="92" width="46" height="28" />
+              <text x="79" y="111">3</text>
+              <text x="79" y="134" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="92" width="46" height="28" />
+              <text x="125" y="111">7</text>
+              <text x="125" y="134" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="92" width="46" height="28" />
+              <text x="171" y="111">9</text>
+              <text x="171" y="134" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect
+                x="194"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="217" y="111">10</text>
+              <text x="217" y="134" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+              <text
+                x="4"
+                y="160"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                After pass 2 → sorted
+              </text>
+              <rect x="10" y="166" width="46" height="28" />
+              <text x="33" y="185">3</text>
+              <text x="33" y="208" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="166" width="46" height="28" />
+              <text x="79" y="185">5</text>
+              <text x="79" y="208" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="166" width="46" height="28" />
+              <text x="125" y="185">7</text>
+              <text x="125" y="208" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect
+                x="148"
+                y="166"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="171" y="185">9</text>
+              <text x="171" y="208" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect
+                x="194"
+                y="166"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="217" y="185">10</text>
+              <text x="217" y="208" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Searching &amp; linear search</h2>
+      <div class="g">
+        <div class="c r">
+          Let DATA be a collection of data with specific information given about
+          ITEM. <b>Searching</b> = finding the location LOC of ITEM in DATA, or
+          printing a message that ITEM was found or not. Found → search
+          <b>successful</b>; otherwise <b>unsuccessful</b>.
+        </div>
+        <div class="c r">
+          <b>Linear (sequential) search</b>: compare ITEM with each element of
+          DATA one by one, traversing DATA sequentially. Example DATA = 5, 15,
+          7, 10, find 7: DATA[1]=7? no; DATA[2]=7? no; DATA[3]=7? yes → found,
+          LOC = 3.
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: Linear search (DATA, N, ITEM)
+Step 1. Set K := 1 and LOC := 0.
+Step 2. Repeat Steps 3 and 4 while LOC = 0 and K &lt;= N:
+Step 3.     If ITEM = DATA[K], then:
+                Set LOC := K.
+Step 4.     Set K := K + 1.
+        [End of loop]
+Step 5. If LOC = 0, then:
+            Write: ITEM is not in the array DATA.
+        Else:
+            Write: LOC is the location of ITEM.
+        [End of If structure]
+Step 6. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 379 190"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                DATA — find 7 (locations 1 … N)
+              </text>
+              <rect x="10" y="18" width="46" height="28" />
+              <text x="33" y="37">5</text>
+              <text x="33" y="60" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="18" width="46" height="28" />
+              <text x="79" y="37">15</text>
+              <text x="79" y="60" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="18" width="46" height="28" />
+              <text x="125" y="37">7</text>
+              <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="18" width="46" height="28" />
+              <text x="171" y="37">10</text>
+              <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <text
+                x="4"
+                y="86"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                DATA[1] = 7? No, go forward · DATA[2] = 7? No, go forward
+              </text>
+              <rect
+                x="10"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="33" y="111">5</text>
+              <rect
+                x="56"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="79" y="111">15</text>
+              <rect x="102" y="92" width="46" height="28" />
+              <text x="125" y="111">7</text>
+              <rect x="148" y="92" width="46" height="28" />
+              <text x="171" y="111">10</text>
+              <text
+                x="4"
+                y="144"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                DATA[3] = 7? Yes → found, LOC = 3
+              </text>
+              <rect x="10" y="150" width="46" height="28" />
+              <text x="33" y="169">5</text>
+              <rect x="56" y="150" width="46" height="28" />
+              <text x="79" y="169">15</text>
+              <rect
+                x="102"
+                y="150"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="125" y="169">7</text>
+              <rect x="148" y="150" width="46" height="28" />
+              <text x="171" y="169">10</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Linear search: add the item if not found</h2>
+      <p class="r">
+        LINEAR(DATA, N, ITEM, LOC) — finds LOC or sets LOC = 0 if unsuccessful,
+        and then sets the last element as ITEM (inserting it at the end).
+      </p>
+      <pre class="r">
+Algorithm: LINEAR(DATA, N, ITEM, LOC)  (adds ITEM at the end if it is not found)
+Step 1. Set K := 1 and LOC := 0.
+Step 2. Repeat Steps 3 and 4 while LOC = 0 and K &lt;= N:
+Step 3.     If ITEM = DATA[K], then:
+                Set LOC := K.
+Step 4.     Set K := K + 1.
+        [End of loop]
+Step 5. If LOC = 0, then:
+            Set LOC := N + 1 and DATA[LOC] := ITEM.
+            Write: Now ITEM is in the location LOC.
+        Else:
+            Write: LOC is the location of ITEM.
+        [End of If structure]
+Step 6. Exit.</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Binary search</h2>
+      <div class="g">
+        <div class="c r">
+          Used when DATA is sorted (numerically or alphabetically).
+          <b>log₂N</b> = how many times N can be divided by 2 until it gives 1:
+          log₂16 = 4 (16/2 = 8/2 = 4/2 = 2/2 = 1).
+        </div>
+        <div class="c r">
+          BEG, END, MID denote the beginning, end and middle locations of the
+          current segment. Each step divides the (improved) array length by 2.
+          Example X = [0, 1, 5, 9, 12] (positions 1–5), find 9: MID =
+          INT((1+5)/2) = 3, X[3] = 5 &lt; 9 → BEG = 4; MID = INT((4+5)/2) = 4,
+          X[4] = 9 → LOC = 4.
+        </div>
+        <div class="c r">
+          <b>Time complexity O(log₂N)</b>. <b>Limitations</b>: the list/array
+          must be sorted; one must have direct access to the middle element.
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: BINARY(DATA, LB, UB, ITEM, LOC)
+Step 1. Set BEG := LB, END := UB and MID := INT((BEG + END)/2).
+Step 2. Repeat Steps 3 and 4 while BEG &lt;= END and DATA[MID] != ITEM:
+Step 3.     If ITEM &lt; DATA[MID], then:
+                Set END := MID - 1.
+            Else:
+                Set BEG := MID + 1.
+            [End of If structure]
+Step 4.     Set MID := INT((BEG + END)/2).
+        [End of Step 2 loop]
+Step 5. If DATA[MID] = ITEM, then:
+            Set LOC := MID.
+        Else:
+            Set LOC := NULL.
+        [End of If structure]
+Step 6. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 410 190"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Sorted X, positions 1–5; find 9
+              </text>
+              <rect x="10" y="18" width="46" height="28" />
+              <text x="33" y="37">0</text>
+              <text x="33" y="60" font-size="10" style="fill: var(--mut)">
+                1
+              </text>
+              <rect x="56" y="18" width="46" height="28" />
+              <text x="79" y="37">1</text>
+              <text x="79" y="60" font-size="10" style="fill: var(--mut)">
+                2
+              </text>
+              <rect x="102" y="18" width="46" height="28" />
+              <text x="125" y="37">5</text>
+              <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+                3
+              </text>
+              <rect x="148" y="18" width="46" height="28" />
+              <text x="171" y="37">9</text>
+              <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+                4
+              </text>
+              <rect x="194" y="18" width="46" height="28" />
+              <text x="217" y="37">12</text>
+              <text x="217" y="60" font-size="10" style="fill: var(--mut)">
+                5
+              </text>
+              <text
+                x="4"
+                y="86"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                MID = INT((1+5)/2) = 3 → X[3] = 5 &lt; 9, so BEG = MID + 1 = 4
+              </text>
+              <rect x="10" y="92" width="46" height="28" />
+              <text x="33" y="111">0</text>
+              <rect x="56" y="92" width="46" height="28" />
+              <text x="79" y="111">1</text>
+              <rect
+                x="102"
+                y="92"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="125" y="111">5</text>
+              <rect x="148" y="92" width="46" height="28" />
+              <text x="171" y="111">9</text>
+              <rect x="194" y="92" width="46" height="28" />
+              <text x="217" y="111">12</text>
+              <text
+                x="4"
+                y="144"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                MID = INT((4+5)/2) = 4 → X[4] = 9 ✓ LOC = 4
+              </text>
+              <rect x="10" y="150" width="46" height="28" />
+              <text x="33" y="169">0</text>
+              <rect x="56" y="150" width="46" height="28" />
+              <text x="79" y="169">1</text>
+              <rect x="102" y="150" width="46" height="28" />
+              <text x="125" y="169">5</text>
+              <rect
+                x="148"
+                y="150"
+                width="46"
+                height="28"
+                style="fill: var(--b); stroke: var(--b)"
+              />
+              <text x="171" y="169">9</text>
+              <rect x="194" y="150" width="46" height="28" />
+              <text x="217" y="169">12</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Try it: binary search</h2>
+      <p class="r">
+        Sorted array (positions 1…N shown under each value); type a target and
+        press <b>Step</b> (a new press after the end restarts).
+      </p>
+      <div class="r">
+        <input id="bt" size="4" value="45" oninput="bsInit()" />
+        <button onclick="bsStep()">Step</button>
+        <button class="o" onclick="bsInit()">Reset</button>
+      </div>
+      <div class="r" id="bsa" style="margin: 0.6em 0"></div>
+      <p class="r" id="bsm"></p>
+    </section>
+    <section class="s">
+      <h2 class="r">Two-dimensional arrays</h2>
+      <div class="g">
+        <div class="c r">
+          A multi-dimensional array is an array of arrays: 2D, 3D, … The 2D
+          (matrix) array is the most commonly used; it presents information in a
+          structured, tabular manner using rows and columns and uses two
+          subscripts.
+        </div>
+        <div class="c r">
+          An array can be declared with multiple dimensions: 1D
+          <code>arr[3]</code>; 2D <code>arr[3][4]</code> = 3×4 = 12 elements; 3D
+          <code>arr[2][3][3]</code> (two 2D arrays).
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 720 190"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text x="30" y="14">1D: arr[3]</text>
+          <rect x="10" y="30" width="26" height="26" />
+          <rect x="36" y="30" width="26" height="26" />
+          <rect x="62" y="30" width="26" height="26" />
+          <text x="150" y="14">2D: arr[3][4] = 12 elements</text>
+          <rect x="110" y="30" width="26" height="26" />
+          <rect x="136" y="30" width="26" height="26" />
+          <rect x="162" y="30" width="26" height="26" />
+          <rect x="188" y="30" width="26" height="26" />
+          <rect x="110" y="56" width="26" height="26" />
+          <rect x="136" y="56" width="26" height="26" />
+          <rect x="162" y="56" width="26" height="26" />
+          <rect x="188" y="56" width="26" height="26" />
+          <rect x="110" y="82" width="26" height="26" />
+          <rect x="136" y="82" width="26" height="26" />
+          <rect x="162" y="82" width="26" height="26" />
+          <rect x="188" y="82" width="26" height="26" />
+          <text x="500" y="14">3D: arr[2][3][3] (two 3×3 tables)</text>
+          <rect x="380" y="40" width="24" height="24" />
+          <rect x="404" y="40" width="24" height="24" />
+          <rect x="428" y="40" width="24" height="24" />
+          <rect x="380" y="64" width="24" height="24" />
+          <rect x="404" y="64" width="24" height="24" />
+          <rect x="428" y="64" width="24" height="24" />
+          <rect x="380" y="88" width="24" height="24" />
+          <rect x="404" y="88" width="24" height="24" />
+          <rect x="428" y="88" width="24" height="24" />
+          <rect x="480" y="30" width="24" height="24" />
+          <rect x="504" y="30" width="24" height="24" />
+          <rect x="528" y="30" width="24" height="24" />
+          <rect x="480" y="54" width="24" height="24" />
+          <rect x="504" y="54" width="24" height="24" />
+          <rect x="528" y="54" width="24" height="24" />
+          <rect x="480" y="78" width="24" height="24" />
+          <rect x="504" y="78" width="24" height="24" />
+          <rect x="528" y="78" width="24" height="24" />
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Two-dimensional arrays: A[m,n]</h2>
+      <div class="g">
+        <div class="c r">
+          A two-dimensional m×n array A is a collection of m·n data elements,
+          each specified by a pair of integers (j, k) called subscripts with 1 ≤
+          j ≤ m and 1 ≤ k ≤ n. The element is written A<sub>jk</sub>, A[j,k] or
+          A[j][k].
+        </div>
+        <div class="c r">
+          Two-dimensional arrays are also known as <b>matrices</b> (mathematics)
+          or <b>tables</b> (business applications).
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 280 232"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text x="140" y="14">A[3,4]: 3 rows × 4 columns</text>
+          <text x="52" y="36">1</text>
+          <text x="112" y="36">2</text>
+          <text x="172" y="36">3</text>
+          <text x="232" y="36">4</text>
+          <rect x="22" y="44" width="60" height="60" />
+          <text x="52" y="78" font-size="10">A[1,1]</text>
+          <rect x="82" y="44" width="60" height="60" />
+          <text x="112" y="78" font-size="10">A[1,2]</text>
+          <rect x="142" y="44" width="60" height="60" />
+          <text x="172" y="78" font-size="10">A[1,3]</text>
+          <rect x="202" y="44" width="60" height="60" />
+          <text x="232" y="78" font-size="10">A[1,4]</text>
+          <rect x="22" y="104" width="60" height="60" />
+          <text x="52" y="138" font-size="10">A[2,1]</text>
+          <rect x="82" y="104" width="60" height="60" />
+          <text x="112" y="138" font-size="10">A[2,2]</text>
+          <rect x="142" y="104" width="60" height="60" />
+          <text x="172" y="138" font-size="10">A[2,3]</text>
+          <rect x="202" y="104" width="60" height="60" />
+          <text x="232" y="138" font-size="10">A[2,4]</text>
+          <rect x="22" y="164" width="60" height="60" />
+          <text x="52" y="198" font-size="10">A[3,1]</text>
+          <rect x="82" y="164" width="60" height="60" />
+          <text x="112" y="198" font-size="10">A[3,2]</text>
+          <rect x="142" y="164" width="60" height="60" />
+          <text x="172" y="198" font-size="10">A[3,3]</text>
+          <rect x="202" y="164" width="60" height="60" />
+          <text x="232" y="198" font-size="10">A[3,4]</text>
+          <text x="10" y="78">1</text>
+          <text x="10" y="138">2</text>
+          <text x="10" y="198">3</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Memory representation of a 2D array</h2>
+      <div class="g">
+        <div class="c r">
+          A 2D array is rectangular, but memory is sequential, so it is stored
+          as a block of (m×n) sequential locations in one of two ways:
+          <b>row-major</b> (elements stored row by row) or
+          <b>column-major</b> (column by column).
+        </div>
+        <div class="c r">
+          Take A[2][3] = [4 5 6; 7 8 9] → row-major: 4 5 6 7 8 9; column-major:
+          4 7 5 8 6 9.
+        </div>
+        <div class="c r">
+          Let M = base address of the matrix, w = memory cells per element (int
+          4, float 4), r = number of rows, c = number of columns, lr = lower
+          index of row, lc = lower index of column; (i, j) = index of the
+          element.
+        </div>
+        <div class="c r">
+          <b>Row-major</b>: Address(A[i][j]) = M + w·(c(i − lr) + (j − lc)).
+          <b>Column-major</b>: Address(A[i][j]) = M + w·((i − lr) + r(j − lc)).
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 328 148"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Row-major (row by row) — A[2][3] = [4 5 6; 7 8 9]
+          </text>
+          <rect x="10" y="18" width="46" height="28" />
+          <text x="33" y="37">4</text>
+          <text x="33" y="60" font-size="10" style="fill: var(--mut)">1,1</text>
+          <rect x="56" y="18" width="46" height="28" />
+          <text x="79" y="37">5</text>
+          <text x="79" y="60" font-size="10" style="fill: var(--mut)">1,2</text>
+          <rect x="102" y="18" width="46" height="28" />
+          <text x="125" y="37">6</text>
+          <text x="125" y="60" font-size="10" style="fill: var(--mut)">
+            1,3
+          </text>
+          <rect x="148" y="18" width="46" height="28" />
+          <text x="171" y="37">7</text>
+          <text x="171" y="60" font-size="10" style="fill: var(--mut)">
+            2,1
+          </text>
+          <rect x="194" y="18" width="46" height="28" />
+          <text x="217" y="37">8</text>
+          <text x="217" y="60" font-size="10" style="fill: var(--mut)">
+            2,2
+          </text>
+          <rect x="240" y="18" width="46" height="28" />
+          <text x="263" y="37">9</text>
+          <text x="263" y="60" font-size="10" style="fill: var(--mut)">
+            2,3
+          </text>
+          <text
+            x="4"
+            y="86"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Column-major (column by column)
+          </text>
+          <rect x="10" y="92" width="46" height="28" />
+          <text x="33" y="111">4</text>
+          <text x="33" y="134" font-size="10" style="fill: var(--mut)">
+            1,1
+          </text>
+          <rect x="56" y="92" width="46" height="28" />
+          <text x="79" y="111">7</text>
+          <text x="79" y="134" font-size="10" style="fill: var(--mut)">
+            2,1
+          </text>
+          <rect x="102" y="92" width="46" height="28" />
+          <text x="125" y="111">5</text>
+          <text x="125" y="134" font-size="10" style="fill: var(--mut)">
+            1,2
+          </text>
+          <rect x="148" y="92" width="46" height="28" />
+          <text x="171" y="111">8</text>
+          <text x="171" y="134" font-size="10" style="fill: var(--mut)">
+            2,2
+          </text>
+          <rect x="194" y="92" width="46" height="28" />
+          <text x="217" y="111">6</text>
+          <text x="217" y="134" font-size="10" style="fill: var(--mut)">
+            1,3
+          </text>
+          <rect x="240" y="92" width="46" height="28" />
+          <text x="263" y="111">9</text>
+          <text x="263" y="134" font-size="10" style="fill: var(--mut)">
+            2,3
+          </text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Matrices: transpose &amp; sum</h2>
+      <div class="g">
+        <div class="c r">
+          An m×n matrix is an array of m·n numbers arranged in m rows and n
+          columns: A = [A<sub>ij</sub>] with A₁₁ … A₁ₙ down to A<sub>m1</sub> …
+          A<sub>mn</sub>.
+        </div>
+        <div class="c r">
+          <b>Transpose</b>: a flipped version of the original. Transposing an
+          (m×n) matrix gives an (n×m) matrix with Mᵀ(j,i) = M(i,j), 1 ≤ i ≤ m, 1
+          ≤ j ≤ n.
+        </div>
+        <div class="c r">
+          <b>Sum</b> is only defined for matrices of the same dimensions: A + B
+          is the (m×n) matrix obtained by adding corresponding elements. A = [1
+          −2; 0 4], B = [3 0; 2 −3] → A + B = [1+3 −2+0; 0+2 4+(−3)] = [4 −2; 2
+          1].
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Matrix product &amp; MATMUL</h2>
+      <div class="g">
+        <div class="c r">
+          Product AB is defined only when the number of columns in A equals the
+          number of rows in B. A is (m×p), B is (p×n) → AB is (m×n).
+        </div>
+        <div class="c r">
+          AB₁₁ = A₁₁B₁₁ + A₁₂B₂₁ <br />AB₁₂ = A₁₁B₁₂ + A₁₂B₂₂ <br />AB₂₁ =
+          A₂₁B₁₁ + A₂₂B₂₁ <br />AB₂₂ = A₂₁B₁₂ + A₂₂B₂₂.
+        </div>
+        <div class="c r">
+          In general
+          <code
+            >AB<sub>ij</sub> = A<sub>i1</sub>B<sub>1j</sub> +
+            A<sub>i2</sub>B<sub>2j</sub> + … + A<sub>ip</sub>B<sub>pj</sub> =
+            Σ<sub>k=1..p</sub> A<sub>ik</sub>B<sub>kj</sub></code
+          >
+        </div>
+      </div>
+      <pre class="r">
+Algorithm: MATMUL(A, B, C, M, P, N)
+A is an M x P matrix array and B is a P x N matrix array.
+This algorithm stores the product of A and B in the M x N matrix array C.
+Step 1. Repeat Steps 2 to 4 for I = 1 to M:
+Step 2.     Repeat Steps 3 and 4 for J = 1 to N:
+Step 3.         Set C[I, J] := 0.
+Step 4.         Repeat for K = 1 to P:
+                    Set C[I, J] := C[I, J] + A[I, K] * B[K, J].
+                [End of K loop]
+            [End of J loop]
+        [End of I loop]
+Step 5. Exit.</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Algebra of matrices: kinds of matrices</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Square</b> (A[2][2]) · <b>Rectangular</b> m ≠ n (A[1][2])
+        </div>
+        <div class="c r">
+          <b>Diagonal</b> (must be square): diag(1 2 3) — non-zero only on the
+          diagonal · <b>Scalar</b> (square, diagonal, equal entries): scal(4,3)
+        </div>
+        <div class="c r">
+          <b>Unit / identity</b>: a <b>square, diagonal, scalar</b> matrix whose
+          diagonal is always 1 (I₃) · <b>Null</b>: all zeros
+        </div>
+        <div class="c r">
+          <b>Idempotent</b>: A² = A (A×A) · <b>Involutory</b>: A² = I ·
+          <b>Singular</b>: |A| = 0
+        </div>
+        <div class="c r">
+          <b>Row</b> matrix [1 2 3 … n] · <b>Column</b> matrix (one column of n
+          entries)
+        </div>
+        <div class="c r">
+          <b>Equal</b>: [a b; c d] = [1 4; 9 8] means a=1, b=4, c=9, d=8
+          (corresponding entries). <b>Equivalent</b> example: [a 6; 9 4] vs [5
+          2; 9 4].
+        </div>
+      </div>
+      <div
+        class="c r"
+        style="display: inline-block; margin: 0.2em 0.4em 0.2em 0"
+      >
+        <span class="ch m">1</span><span class="ch z">0</span
+        ><span class="ch z">0</span><br /><span class="ch z">0</span
+        ><span class="ch m">2</span><span class="ch z">0</span><br /><span
+          class="ch z"
+          >0</span
+        ><span class="ch z">0</span><span class="ch m">3</span>
+      </div>
+      <div
+        class="c r"
+        style="display: inline-block; margin: 0.2em 0.4em 0.2em 0"
+      >
+        <span class="ch m">4</span><span class="ch z">0</span
+        ><span class="ch z">0</span><br /><span class="ch z">0</span
+        ><span class="ch m">4</span><span class="ch z">0</span><br /><span
+          class="ch z"
+          >0</span
+        ><span class="ch z">0</span><span class="ch m">4</span>
+      </div>
+      <div
+        class="c r"
+        style="display: inline-block; margin: 0.2em 0.4em 0.2em 0"
+      >
+        <span class="ch m">1</span><span class="ch z">0</span
+        ><span class="ch z">0</span><br /><span class="ch z">0</span
+        ><span class="ch m">1</span><span class="ch z">0</span><br /><span
+          class="ch z"
+          >0</span
+        ><span class="ch z">0</span><span class="ch m">1</span>
+      </div>
+      <div
+        class="c r"
+        style="display: inline-block; margin: 0.2em 0.4em 0.2em 0"
+      >
+        <span class="ch z">0</span><span class="ch z">0</span
+        ><span class="ch z">0</span><br /><span class="ch z">0</span
+        ><span class="ch z">0</span><span class="ch z">0</span>
+      </div>
+      <p class="m r">
+        Diagonal diag(1 2 3) · Scalar scal(4,3) · Unit I₃ · Null
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Sparse matrices</h2>
+      <div class="g">
+        <div class="c r">
+          Matrices which have the <b>majority of their elements as zero</b>,
+          e.g. [0 0 1 2; 1 0 0 3; 1 0 0 0]. If the number of zeros exceeds
+          (n·m)/2 (m, n the dimensions), the matrix is sparse.
+        </div>
+        <div class="c r">
+          <b>Why use it instead of a simple matrix?</b> <i>Storage</i>: fewer
+          non-zeros, less memory (avoids zeros). <i>Computing time</i>: can be
+          saved by logically designing algorithms that traverse only non-zero
+          elements.
+        </div>
+        <div class="c r">
+          Sparse matrices are of <b>two main types</b>:<br /><b
+            >1. Diagonal matrices</b
+          >
+          — non-zero elements are stored in the leading diagonal. Its variant is
+          the <b>tridiagonal</b> matrix: the diagonal and the one above and
+          below it have non-zero elements.<br /><b>2. Triangular matrices</b> —
+          non-zero elements are placed below the leading diagonal (mainly
+          <b>lower triangular</b>).
+        </div>
+      </div>
+      <div class="c r" style="display: inline-block; margin: 0.3em 0.5em 0 0">
+        <span class="ch m">1</span><span class="ch z">0</span
+        ><span class="ch z">0</span><span class="ch z">0</span><br /><span
+          class="ch m"
+          >5</span
+        ><span class="ch m">2</span><span class="ch z">0</span
+        ><span class="ch z">0</span><br /><span class="ch m">6</span
+        ><span class="ch m">7</span><span class="ch m">3</span
+        ><span class="ch z">0</span><br /><span class="ch m">8</span
+        ><span class="ch m">9</span><span class="ch m">10</span
+        ><span class="ch m">9</span>
+      </div>
+      <div class="c r" style="display: inline-block; margin: 0.3em 0.5em 0 0">
+        <span class="ch m">1</span><span class="ch m">6</span
+        ><span class="ch z">0</span><span class="ch z">0</span><br /><span
+          class="ch m"
+          >7</span
+        ><span class="ch m">2</span><span class="ch m">9</span
+        ><span class="ch z">0</span><br /><span class="ch z">0</span
+        ><span class="ch m">2</span><span class="ch m">3</span
+        ><span class="ch m">8</span><br /><span class="ch z">0</span
+        ><span class="ch z">0</span><span class="ch m">9</span
+        ><span class="ch m">6</span>
+      </div>
+      <p class="r m">Left: lower triangular · Right: tridiagonal</p>
+    </section>
+    <section class="s">
+      <h2 class="r">Strings</h2>
+      <div class="g">
+        <div class="c r">
+          A finite sequence S of characters is called a <b>string</b>. With zero
+          characters → <b>empty / null string</b> (Λ or λ). The number of
+          characters is the <b>string length</b>.
+        </div>
+        <div class="c r">
+          A string is denoted by enclosing its characters in single or double
+          quotation marks → <b>string constant</b>. It is terminated by
+          <code>\0</code>, stored as the last element of every string: “Hello” →
+          5 characters + \0 → <b>length 6</b> as stored (the string itself has 5
+          characters).
+        </div>
+        <div class="c r">
+          <b>Notation</b>: characters may be lowercase letters (a, b, …) and
+          exponents (powers) denote repetition: a²b³ab² = aabbbabb; (cd)³ =
+          cdcdcd. Concatenation of X and Y is written X‖Y, X·Y or XY.
+        </div>
+        <div class="c r">
+          <b>Concatenation</b>: S1‖S2 = the characters of S1 followed by those
+          of S2. S1 = 'The', S2 = 'End' → 'TheEnd'; S1‖' '‖S2 = 'The End'.
+        </div>
+        <div class="c r">
+          <b>Substring</b>: part of a string. If S = X‖Y‖Z then Y is a substring
+          of S (X, Z non-empty strings); X empty → Y is an
+          <i>initial</i> substring; Z empty → Y is a <i>terminal</i> substring;
+          a proper substring has length(Y) &lt; length(S). 'BE OR NOT' is a
+          substring of 'TO BE OR NOT TO BE'. Written SUBSTRING(string, initial,
+          length), initial = position of the substring’s first character:
+          SUBSTRING('THE END', 4, 4) = ' END'.
+        </div>
+      </div>
+      <svg class="r" viewBox="0 0 454 74" style="width: 100%; max-height: 46vh">
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            “Hello”: 5 characters + \0 → length 6 (array length); string length
+            5
+          </text>
+          <rect x="10" y="18" width="46" height="28" />
+          <text x="33" y="37">H</text>
+          <text x="33" y="60" font-size="10" style="fill: var(--mut)">1</text>
+          <rect x="56" y="18" width="46" height="28" />
+          <text x="79" y="37">e</text>
+          <text x="79" y="60" font-size="10" style="fill: var(--mut)">2</text>
+          <rect x="102" y="18" width="46" height="28" />
+          <text x="125" y="37">l</text>
+          <text x="125" y="60" font-size="10" style="fill: var(--mut)">3</text>
+          <rect x="148" y="18" width="46" height="28" />
+          <text x="171" y="37">l</text>
+          <text x="171" y="60" font-size="10" style="fill: var(--mut)">4</text>
+          <rect x="194" y="18" width="46" height="28" />
+          <text x="217" y="37">o</text>
+          <text x="217" y="60" font-size="10" style="fill: var(--mut)">5</text>
+          <rect
+            x="240"
+            y="18"
+            width="46"
+            height="28"
+            style="fill: var(--b); stroke: var(--b)"
+          />
+          <text x="263" y="37">\0</text>
+          <text x="263" y="60" font-size="10" style="fill: var(--mut)">6</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">
+        String operations I: length, indexing, insertion, deletion
+      </h2>
+      <div class="g">
+        <div class="c r">
+          <b>Length</b>: number of characters in a string → LENGTH(string).
+          LENGTH('Computer') = 8.
+        </div>
+        <div class="c r">
+          <b>Indexing (pattern matching)</b>: finding the position where a
+          string pattern P first appears in a given text T → INDEX(text,
+          pattern). If P does not appear in T, INDEX = 0. Arguments can be
+          string constants or variables.
+        </div>
+        <div class="c r">
+          T = 'His Father Is The Professor': INDEX(T,'The') = 15;
+          INDEX(T,'Then') = 0; INDEX(T,' The') = 14. With T = 'HIS FATHER IS THE
+          PROFESSOR', INDEX(T,'THE') = 7 — it travels the string and finds the
+          first match (inside FATHER).
+        </div>
+        <div class="c r">
+          <b>Insertion</b>: insert a string S into text T beginning at position
+          K → INSERT(text, position, string): INSERT('ABCDE', 3, 'XYZ') =
+          'ABXYZCDE' (XYZ starts at position 3).
+        </div>
+        <div class="c r">
+          <b>Deletion</b>: delete the substring that begins at position K with
+          length L → DELETE(text, position, length): DELETE('ABCDEFG', 4, 2) =
+          'ABCFG'.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">String operations II: replacement</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Replacement</b>: replace the first occurrence of pattern P₁ by
+          pattern P₂ → REPLACE(text, pattern₁, pattern₂). REPLACE('ABCDE', 'BC',
+          'X') = 'AXDE'.
+        </div>
+        <div class="c r">
+          <b>2nd type</b>: every occurrence of P in T is replaced by Q. T =
+          XABYABZ, P = AB, Q = C: AB occurs twice, so a loop runs twice — first
+          gives XCYABZ, second gives XCYCZ.
+        </div>
+        <div class="c r">
+          <b>Error</b>: if Q (the replacement) contains P (what is replaced),
+          the loop never ends. T = XAY, P = A, Q = AB: A never disappears →
+          infinite loop.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Pattern matching algorithm</h2>
+      <div class="g">
+        <div class="c r">
+          Decides whether or not a given string pattern P appears in a string
+          text T; length(P) ≤ length(T). P and T have lengths R and S, stored as
+          arrays with one character per element. The algorithm finds the INDEX
+          of P in T.
+        </div>
+      </div>
+      <pre class="r">
+Algorithm: Pattern matching (P, R, T, S, INDEX)
+Step 1. Set K := 1 and MAX := S - R + 1.
+Step 2. Repeat Steps 3 to 5 while K &lt;= MAX:
+Step 3.     Repeat for L = 1 to R:
+                If P[L] != T[K + L - 1], then:
+                    Go to Step 5.
+            [End of inner loop]
+Step 4.     Set INDEX := K and Exit.
+Step 5.     Set K := K + 1.
+        [End of Step 2, outer loop]
+Step 6. Set INDEX := 0.
+Step 7. Exit.</pre
+      >
+      <p class="r">
+        T = ababbaabaaab (S = 12), P = abaa (R = 4), MAX = 12 − 4 + 1 = 9.
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Pattern matching: step work</h2>
+      <table class="r">
+        <tr>
+          <th>Step</th>
+          <th>Window of abaa</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>ABA#</td>
+          <td>mismatch: 4th letter</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>#</td>
+          <td>mismatch: 1st letter</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>AB#</td>
+          <td>mismatch: 3rd letter</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>#</td>
+          <td>mismatch: 1st letter</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>#</td>
+          <td>mismatch: 1st letter</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>A#</td>
+          <td>mismatch: 2nd letter</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>ABAA</td>
+          <td>Success</td>
+        </tr>
+      </table>
+      <p class="r">
+        Comparisons: 4+1+3+1+1+2 = 12 for the six failed windows, plus 4 for the
+        successful window = <b>16 in total</b>; windows tried (steps) w = 7.
+        Time complexity <b>O(nm)</b>:
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+// time complexity O(n*m)
+for (j = 0; j &lt;= n - m; j++) {        // j = 0-based start of the window in T
+    for (i = 0; i &lt; m; i++) {
+        if (P[i] != T[j + i]) break;   // mismatch: slide the window
+    }
+    if (i == m) return j + 1;          // all characters matched: INDEX = j + 1 (the algorithm is 1-based)
+}
+return 0;                              // INDEX = 0: no window matched</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+T = a b a b b a a b a a a b
+1: a b a a        ABA#  mismatch 4th letter
+2:   a b a a      #     mismatch 1st letter
+3:     a b a a    AB#   mismatch 3rd letter
+4:       a b a a  #     mismatch 1st letter
+5:         a b a a #    mismatch 1st letter
+6:           a b a a A# mismatch 2nd letter
+7:             a b a a ABAA  success → INDEX = 7</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Try it: pattern matching</h2>
+      <div class="r">
+        <b>T</b> <input id="pt" size="16" value="ababbaabaaab" /> <b>P</b>
+        <input id="pp" size="6" value="abaa" />
+        <button onclick="pmStep()">Step</button>
+        <button class="o" onclick="pmInit()">Reset</button>
+      </div>
+      <div class="r" id="pa" style="margin: 0.6em 0"></div>
+      <p class="r" id="pm"></p>
+      <p class="m r">
+        Green = matched, accent = mismatch. The default example matches at index
+        7.
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Linked list (one-way list)</h2>
+      <div class="g">
+        <div class="c r">
+          A <b>linear collection of data elements, called nodes</b>, where the
+          linear order is maintained by means of links or pointers. Each node
+          has two parts: the first holds the information of the element; the
+          second, the <b>link field</b> (next pointer field), holds the address
+          of the next node.
+        </div>
+        <div class="c r">
+          The pointer of the <b>last node</b> holds a special value, the
+          <b>null pointer</b> (any invalid address), denoted ✕, signalling the
+          end of the list.
+        </div>
+        <div class="c r">
+          A special pointer <b>START</b> holds the address of the first node. If
+          START = NULL the list has no nodes: a <b>NULL list</b> or empty list.
+        </div>
+      </div>
+      <svg class="r" viewBox="0 0 666 70" style="width: 100%; max-height: 46vh">
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Schematic diagram of a linked list with five nodes
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">A</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">B</text>
+          <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="31" x2="312" y2="31" />
+          <rect x="312" y="18" width="96" height="26" />
+          <line x1="372" y1="18" x2="372" y2="44" />
+          <text x="342" y="35">C</text>
+          <circle cx="390" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="390" y1="31" x2="430" y2="31" />
+          <rect x="430" y="18" width="96" height="26" />
+          <line x1="490" y1="18" x2="490" y2="44" />
+          <text x="460" y="35">D</text>
+          <circle cx="508" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="508" y1="31" x2="548" y2="31" />
+          <rect x="548" y="18" width="96" height="26" />
+          <line x1="608" y1="18" x2="608" y2="44" />
+          <text x="578" y="35">E</text>
+          <text x="626" y="36" font-size="14">✕</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Arrays vs linked lists</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Drawbacks of arrays</b>: (1) once elements are stored it is
+          difficult to insert or delete at any position; (2) arrays have fixed
+          size — memory too large wastes the unused part, memory too small loses
+          data.
+        </div>
+        <div class="c r">
+          <b>Advantage of a linked list</b>: it can dynamically shrink and
+          expand, so you can insert or delete elements efficiently at any
+          position.
+        </div>
+      </div>
+      <table class="r">
+        <tr>
+          <th></th>
+          <th>Array</th>
+          <th>Linked list</th>
+        </tr>
+        <tr>
+          <td>Strength</td>
+          <td>
+            Random access (fast search) · less memory per element · better cache
+            locality
+          </td>
+          <td>
+            Fast insertion/deletion · dynamic size · efficient memory
+            allocation/utilization
+          </td>
+        </tr>
+        <tr>
+          <td>Weakness</td>
+          <td>
+            Slow insertion/deletion · fixed size · inefficient memory
+            allocation/utilization
+          </td>
+          <td>Slow search · more memory needed per node</td>
+        </tr>
+      </table>
+    </section>
+    <section class="s">
+      <h2 class="r">Traversing a linked list</h2>
+      <p class="r">
+        LIST is a linked list in memory; the algorithm applies PROCESS to each
+        element. PTR points to the node currently being processed.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: Traversing a linked list
+Step 1. Set PTR := START.
+Step 2. Repeat Steps 3 and 4 while PTR != NULL:
+Step 3.     Apply PROCESS to INFO[PTR].
+Step 4.     Set PTR := LINK[PTR].
+        [End of Step 2 loop]
+Step 5. Exit.</pre
+          >
+          <pre class="r">
+Algorithm: print the values (info) of the list
+Step 1. Set PTR := START.
+Step 2. Repeat Steps 3 and 4 while PTR != NULL:
+Step 3.     Write: INFO[PTR].
+Step 4.     Set PTR := LINK[PTR].
+        [End of loop]
+Step 5. Exit.</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+Algorithm: count the number of elements
+Step 1. Set NUM := 0.
+Step 2. Set PTR := START.
+Step 3. Repeat Steps 4 and 5 while PTR != NULL:
+Step 4.     Set NUM := NUM + 1.
+Step 5.     Set PTR := LINK[PTR].
+        [End of loop]
+Step 6. Exit.</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Searching a linked list</h2>
+      <p class="r">
+        SEARCH(INFO, NEXT, HEAD, ITEM, PREV, CURR, SCAN) — finds the location
+        LOC of the node where ITEM first appears in LIST, otherwise sets LOC =
+        NULL.
+      </p>
+      <p class="r m">
+        For an ascending list, keep moving while ITEM &gt; INFO[PTR]. Time:
+        worst case O(n), average O(n/2).
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: SEARCH(INFO, LINK, START, ITEM, LOC)
+Step 1. Set PTR := START.
+Step 2. Repeat Steps 3 and 4 while PTR != NULL:
+Step 3.     If ITEM = INFO[PTR], then:
+                Set LOC := PTR and Exit.
+            Else:
+                Set PTR := LINK[PTR].
+        [End of loop]
+Step 4. Set LOC := NULL.
+Step 5. Exit.</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+Algorithm: SRCHSL(INFO, LINK, START, ITEM, LOC)  (sorted list)
+Step 1. Set PTR := START.
+Step 2. Repeat Step 3 while PTR != NULL:
+Step 3.     If ITEM &gt; INFO[PTR], then:
+                Set PTR := LINK[PTR].
+            Else if ITEM = INFO[PTR], then:
+                Set LOC := PTR and Exit.
+            Else:
+                Set LOC := NULL and Exit.
+            [End of If structure]
+        [End of Step 2 loop]
+Step 4. Exit.</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">AVAIL list &amp; garbage collection</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Avail list</b> points to “available space / node”. Together with
+          the linked lists in memory, a special list of unused memory cells is
+          maintained. This list, which has its own pointer, is the
+          <b>Avail list</b> (free-storage list or free pool).
+        </div>
+        <div class="c r">
+          <b>Garbage collection</b>: the O.S. of a computer may periodically
+          collect all deleted or unused space onto the free-storage list. Any
+          technique that does this is called garbage collection. The O.S.
+          performs it whenever it finds the CPU idle or programs falling short
+          of memory space.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 600 136"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Data list
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">A</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">B</text>
+          <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="31" x2="312" y2="31" />
+          <rect x="312" y="18" width="96" height="26" />
+          <line x1="372" y1="18" x2="372" y2="44" />
+          <text x="342" y="35">C</text>
+          <text x="390" y="36" font-size="14">✕</text>
+          <text
+            x="4"
+            y="80"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Free-storage list (AVAIL list / free pool)
+          </text>
+          <rect x="4" y="86" width="46" height="26" />
+          <text x="27" y="103" font-size="10">AVAIL</text>
+          <line class="a" x1="50" y1="99" x2="76" y2="99" />
+          <rect x="76" y="86" width="96" height="26" />
+          <line x1="136" y1="86" x2="136" y2="112" />
+          <text x="106" y="103">F1</text>
+          <circle cx="154" cy="99" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="99" x2="194" y2="99" />
+          <rect x="194" y="86" width="96" height="26" />
+          <line x1="254" y1="86" x2="254" y2="112" />
+          <text x="224" y="103">F2</text>
+          <circle cx="272" cy="99" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="99" x2="312" y2="99" />
+          <rect x="312" y="86" width="96" height="26" />
+          <line x1="372" y1="86" x2="372" y2="112" />
+          <text x="342" y="103">F3</text>
+          <text x="390" y="104" font-size="14">✕</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Overflow &amp; underflow</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Overflow</b>: new data is to be inserted into a data structure but
+          there is no available space, i.e. the free-storage list is empty. The
+          programmer prints OVERFLOW and must add space. In a linked list it
+          occurs when <code>AVAIL = NULL</code>.
+        </div>
+        <div class="c r">
+          <b>Underflow</b>: one wants to delete data from a data structure that
+          is empty. The programmer prints UNDERFLOW. In a linked list it occurs
+          when <code>START = NULL</code>.
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Insertion into a linked list</h2>
+      <p class="r">
+        LIST has successive nodes A and B; insert a new node N (info/value +
+        LINK) between them: A’s LINK points to N and N’s LINK points to B. N is
+        taken from the free-storage list.
+      </p>
+      <svg
+        class="r"
+        viewBox="0 0 600 272"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Before insertion — Data list
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">A</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">B</text>
+          <text x="272" y="36" font-size="14">✕</text>
+          <text
+            x="4"
+            y="80"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Free-storage list
+          </text>
+          <rect x="4" y="86" width="46" height="26" />
+          <text x="27" y="103" font-size="10">AVAIL</text>
+          <line class="a" x1="50" y1="99" x2="76" y2="99" />
+          <rect x="76" y="86" width="96" height="26" />
+          <line x1="136" y1="86" x2="136" y2="112" />
+          <text x="106" y="103">N</text>
+          <circle cx="154" cy="99" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="99" x2="194" y2="99" />
+          <rect x="194" y="86" width="96" height="26" />
+          <line x1="254" y1="86" x2="254" y2="112" />
+          <text x="224" y="103">F2</text>
+          <text x="272" y="104" font-size="14">✕</text>
+          <text
+            x="4"
+            y="148"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            After insertion — Data list
+          </text>
+          <rect x="4" y="154" width="46" height="26" />
+          <text x="27" y="171" font-size="10">START</text>
+          <line class="a" x1="50" y1="167" x2="76" y2="167" />
+          <rect x="76" y="154" width="96" height="26" />
+          <line x1="136" y1="154" x2="136" y2="180" />
+          <text x="106" y="171">A</text>
+          <circle cx="154" cy="167" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="167" x2="194" y2="167" />
+          <rect x="194" y="154" width="96" height="26" />
+          <line x1="254" y1="154" x2="254" y2="180" />
+          <text x="224" y="171">N</text>
+          <circle cx="272" cy="167" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="167" x2="312" y2="167" />
+          <rect x="312" y="154" width="96" height="26" />
+          <line x1="372" y1="154" x2="372" y2="180" />
+          <text x="342" y="171">B</text>
+          <text x="390" y="172" font-size="14">✕</text>
+          <text
+            x="4"
+            y="216"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Free-storage list
+          </text>
+          <rect x="4" y="222" width="46" height="26" />
+          <text x="27" y="239" font-size="10">AVAIL</text>
+          <line class="a" x1="50" y1="235" x2="76" y2="235" />
+          <rect x="76" y="222" width="96" height="26" />
+          <line x1="136" y1="222" x2="136" y2="248" />
+          <text x="106" y="239">F2</text>
+          <text x="154" y="240" font-size="14">✕</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Insert as first node &amp; at location LOC</h2>
+      <p class="r m">
+        AVAIL holds the pointer of the first blank position; NEW stores it.
+        LINK[AVAIL] is the second blank position; assigning it to AVAIL makes
+        the 2nd blank the 1st blank.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: insert ITEM as the first node of the list
+Step 1. If AVAIL = NULL, then:
+            Write: OVERFLOW and Exit.
+Step 2. Set NEW := AVAIL and AVAIL := LINK[AVAIL].
+Step 3. Set INFO[NEW] := ITEM.
+Step 4. Set LINK[NEW] := START.
+Step 5. Set START := NEW.
+Step 6. Exit.</pre
+          >
+          <pre class="r">
+Algorithm: insert ITEM at location LOC (after node A; if LOC = NULL, as the first node)
+Step 1. If AVAIL = NULL, then:
+            Write: OVERFLOW and Exit.
+Step 2. Set NEW := AVAIL and AVAIL := LINK[AVAIL].
+Step 3. Set INFO[NEW] := ITEM.
+Step 4. If LOC = NULL, then:
+            Set LINK[NEW] := START and START := NEW.
+        Else:
+            Set LINK[NEW] := LINK[LOC] and LINK[LOC] := NEW.
+        [End of If structure]
+Step 5. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 600 136"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Insert ITEM as first node — before
+              </text>
+              <rect x="4" y="18" width="46" height="26" />
+              <text x="27" y="35" font-size="10">START</text>
+              <line class="a" x1="50" y1="31" x2="76" y2="31" />
+              <rect x="76" y="18" width="96" height="26" />
+              <line x1="136" y1="18" x2="136" y2="44" />
+              <text x="106" y="35">A</text>
+              <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="31" x2="194" y2="31" />
+              <rect x="194" y="18" width="96" height="26" />
+              <line x1="254" y1="18" x2="254" y2="44" />
+              <text x="224" y="35">B</text>
+              <text x="272" y="36" font-size="14">✕</text>
+              <text
+                x="4"
+                y="80"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                After (NEW = ITEM; LINK[NEW] = old START)
+              </text>
+              <rect x="4" y="86" width="46" height="26" />
+              <text x="27" y="103" font-size="10">START</text>
+              <line class="a" x1="50" y1="99" x2="76" y2="99" />
+              <rect x="76" y="86" width="96" height="26" />
+              <line x1="136" y1="86" x2="136" y2="112" />
+              <text x="106" y="103">ITEM</text>
+              <circle cx="154" cy="99" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="99" x2="194" y2="99" />
+              <rect x="194" y="86" width="96" height="26" />
+              <line x1="254" y1="86" x2="254" y2="112" />
+              <text x="224" y="103">A</text>
+              <circle cx="272" cy="99" r="3" style="fill: var(--a)" />
+              <line class="a" x1="272" y1="99" x2="312" y2="99" />
+              <rect x="312" y="86" width="96" height="26" />
+              <line x1="372" y1="86" x2="372" y2="112" />
+              <text x="342" y="103">B</text>
+              <text x="390" y="104" font-size="14">✕</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Inserting into a sorted list</h2>
+      <p class="r">
+        Example: ITEM = 35 in 10→20→30→40: SAVE and PTR walk along; 35 &lt; 40 →
+        insert after 30.
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Procedure: FINDA(INFO, LINK, START, ITEM, LOC)
+Finds the location LOC of the last node such that INFO[LOC] &lt; ITEM, or sets LOC := NULL.
+Step 1. If START = NULL, then:
+            Set LOC := NULL and Return.
+Step 2. If ITEM &lt; INFO[START], then:
+            Set LOC := NULL and Return.
+Step 3. Set SAVE := START and PTR := LINK[START].
+Step 4. Repeat Steps 5 and 6 while PTR != NULL:
+Step 5.     If ITEM &lt; INFO[PTR], then:
+                Set LOC := SAVE and Return.
+            [End of If structure]
+Step 6.     Set SAVE := PTR and PTR := LINK[PTR].
+        [End of loop]
+Step 7. Set LOC := SAVE.
+Step 8. Return.</pre
+          >
+          <pre class="r">
+Algorithm: INSERT(INFO, LINK, START, AVAIL, ITEM)  (sorted linked list)
+Inserts ITEM at location LOC in a sorted linked list.
+Step 1. Call FINDA(INFO, LINK, START, ITEM, LOC).
+Step 2. Call INSLOC(INFO, LINK, START, AVAIL, LOC, ITEM).
+Step 3. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 600 88"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                ITEM = 35: SAVE trails PTR; 35 &lt; INFO[PTR]=40 → insert after
+                SAVE
+              </text>
+              <rect x="4" y="18" width="46" height="26" />
+              <text x="27" y="35" font-size="10">START</text>
+              <line class="a" x1="50" y1="31" x2="76" y2="31" />
+              <rect x="76" y="18" width="96" height="26" />
+              <line x1="136" y1="18" x2="136" y2="44" />
+              <text x="106" y="35">10</text>
+              <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="31" x2="194" y2="31" />
+              <rect x="194" y="18" width="96" height="26" />
+              <line x1="254" y1="18" x2="254" y2="44" />
+              <text x="224" y="35">20</text>
+              <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="272" y1="31" x2="312" y2="31" />
+              <rect x="312" y="18" width="96" height="26" />
+              <line x1="372" y1="18" x2="372" y2="44" />
+              <text x="342" y="35">30</text>
+              <circle cx="390" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="390" y1="31" x2="430" y2="31" />
+              <rect x="430" y="18" width="96" height="26" />
+              <line x1="490" y1="18" x2="490" y2="44" />
+              <text x="460" y="35">40</text>
+              <text x="508" y="36" font-size="14">✕</text>
+              <text x="322" y="62" text-anchor="start" style="fill: var(--b)">
+                ▲ SAVE
+              </text>
+              <text x="440" y="62" text-anchor="start" style="fill: var(--b)">
+                ▲ PTR
+              </text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Deletion from a linked list</h2>
+      <p class="r">
+        Delete node N between A and B: A’s LINK skips N to B; N goes back to the
+        free-storage list (AVAIL).
+      </p>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: DEL(INFO, LINK, START, AVAIL, LOC, LOCP)
+Deletes the node N at location LOC. LOCP is the location of the node which precedes N (LOCP = NULL when N is the first node).
+Step 1. If LOCP = NULL, then:
+            Set START := LINK[START].
+        Else:
+            Set LINK[LOCP] := LINK[LOC].
+        [End of If structure]
+Step 2. Set LINK[LOC] := AVAIL and AVAIL := LOC.
+Step 3. Exit.</pre
+          >
+        </div>
+        <div>
+          <svg
+            class="r"
+            viewBox="0 0 600 204"
+            style="width: 100%; max-height: 46vh"
+          >
+            <g text-anchor="middle" font-size="12">
+              <text
+                x="4"
+                y="12"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Before deletion — Data list
+              </text>
+              <rect x="4" y="18" width="46" height="26" />
+              <text x="27" y="35" font-size="10">START</text>
+              <line class="a" x1="50" y1="31" x2="76" y2="31" />
+              <rect x="76" y="18" width="96" height="26" />
+              <line x1="136" y1="18" x2="136" y2="44" />
+              <text x="106" y="35">A</text>
+              <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="31" x2="194" y2="31" />
+              <rect x="194" y="18" width="96" height="26" />
+              <line x1="254" y1="18" x2="254" y2="44" />
+              <text x="224" y="35">N</text>
+              <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+              <line class="a" x1="272" y1="31" x2="312" y2="31" />
+              <rect x="312" y="18" width="96" height="26" />
+              <line x1="372" y1="18" x2="372" y2="44" />
+              <text x="342" y="35">B</text>
+              <text x="390" y="36" font-size="14">✕</text>
+              <text
+                x="4"
+                y="80"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                After deletion — Data list
+              </text>
+              <rect x="4" y="86" width="46" height="26" />
+              <text x="27" y="103" font-size="10">START</text>
+              <line class="a" x1="50" y1="99" x2="76" y2="99" />
+              <rect x="76" y="86" width="96" height="26" />
+              <line x1="136" y1="86" x2="136" y2="112" />
+              <text x="106" y="103">A</text>
+              <circle cx="154" cy="99" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="99" x2="194" y2="99" />
+              <rect x="194" y="86" width="96" height="26" />
+              <line x1="254" y1="86" x2="254" y2="112" />
+              <text x="224" y="103">B</text>
+              <text x="272" y="104" font-size="14">✕</text>
+              <text
+                x="4"
+                y="148"
+                font-size="11"
+                style="fill: var(--mut)"
+                text-anchor="start"
+              >
+                Free-storage list (N added at the front)
+              </text>
+              <rect x="4" y="154" width="46" height="26" />
+              <text x="27" y="171" font-size="10">AVAIL</text>
+              <line class="a" x1="50" y1="167" x2="76" y2="167" />
+              <rect x="76" y="154" width="96" height="26" />
+              <line x1="136" y1="154" x2="136" y2="180" />
+              <text x="106" y="171">N</text>
+              <circle cx="154" cy="167" r="3" style="fill: var(--a)" />
+              <line class="a" x1="154" y1="167" x2="194" y2="167" />
+              <rect x="194" y="154" width="96" height="26" />
+              <line x1="254" y1="154" x2="254" y2="180" />
+              <text x="224" y="171">F1</text>
+              <text x="272" y="172" font-size="14">✕</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Delete the node with a given ITEM</h2>
+      <pre class="r">
+Algorithm: DELETE-NODE(START, INFO, LINK, AVAIL, LOC, LOCP, ITEM)
+Step 1. If START = NULL, then:
+            Set LOC := NULL and LOCP := NULL, and Exit.
+Step 2. If INFO[START] = ITEM, then:
+            Set LOC := START and LOCP := NULL.
+            Set START := LINK[START].
+            Set LINK[LOC] := AVAIL and AVAIL := LOC, and Exit.
+Step 3. Set SAVE := START and PTR := LINK[START].
+Step 4. Repeat Steps 5 and 6 while PTR != NULL:
+Step 5.     If INFO[PTR] = ITEM, then:
+                Set LOC := PTR and LOCP := SAVE.
+                Set LINK[LOCP] := LINK[LOC].
+                Set LINK[LOC] := AVAIL and AVAIL := LOC, and Exit.
+Step 6.     Set SAVE := PTR and PTR := LINK[PTR].
+        [End of loop]
+Step 7. Set LOC := NULL.
+        Write: ITEM not in the linked list.
+Step 8. Exit.</pre
+      >
+    </section>
+    <section class="s">
+      <h2 class="r">Delete from the beginning / end</h2>
+      <div class="two">
+        <div>
+          <pre class="r">
+Algorithm: deletion from the beginning of a linked list
+Step 1. If START = NULL, then:
+            Write: UNDERFLOW and Exit.
+Step 2. If LINK[START] = NULL, then:
+            Set PTR := START and START := NULL.
+        Else:
+            Set PTR := START and START := LINK[START].
+        [End of If structure]
+Step 3. Set LINK[PTR] := AVAIL and AVAIL := PTR.
+Step 4. Exit.</pre
+          >
+        </div>
+        <div>
+          <pre class="r">
+Algorithm: deletion from the end of a linked list
+Step 1. If START = NULL, then:
+            Write: UNDERFLOW and Exit.
+Step 2. If LINK[START] = NULL, then:
+            Set PTR := START and START := NULL.
+            Set LINK[PTR] := AVAIL and AVAIL := PTR, and Exit.
+Step 3. Set PTR := START.
+Step 4. Repeat Step 5 while LINK[PTR] != NULL:
+Step 5.     Set LOC := PTR and PTR := LINK[PTR].
+        [End of loop]
+Step 6. Set LINK[LOC] := NULL.
+Step 7. Set LINK[PTR] := AVAIL and AVAIL := PTR, and Exit.</pre
+          >
+        </div>
+      </div>
+    </section>
+    <section class="s">
+      <h2 class="r">Try it: sorted linked list</h2>
+      <div class="r">
+        <input id="lv" size="4" value="30" />
+        <button onclick="lsIns()">Insert (sorted)</button>
+        <button class="o" onclick="lsPop()">Delete first</button>
+      </div>
+      <div class="r" id="ll" style="margin: 0.6em 0"></div>
+      <p class="r" id="lm"></p>
+      <p class="m r">
+        Click a node to delete it. Memory has 8 cells — fill it to trigger
+        OVERFLOW.
+      </p>
+    </section>
+    <section class="s">
+      <h2 class="r">Header linked lists</h2>
+      <div class="g">
+        <div class="c r">
+          A <b>header linked list</b> always contains a special node, the
+          <b>header node</b>, at the beginning. START points to the header node,
+          which holds some extra information about the list. The header node is
+          not part of the list itself; its LINK part contains the address of the
+          first node: LINK[START].
+        </div>
+        <div class="c r">
+          <b>Grounded header list</b>: the last node contains the null pointer.
+          Empty if LINK[START] = NULL.
+        </div>
+        <div class="c r">
+          <b>Circular header list</b>: the last node points back to the header
+          node. Empty if LINK[START] = START.
+        </div>
+        <div class="c r">
+          <b>Why circular?</b> Many operations are much easier: the NULL pointer
+          is not used, so every pointer holds a valid address, and every
+          ordinary node has a predecessor, so the first node needs no special
+          case.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 600 140"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Grounded header list
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">Header</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">A</text>
+          <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="31" x2="312" y2="31" />
+          <rect x="312" y="18" width="96" height="26" />
+          <line x1="372" y1="18" x2="372" y2="44" />
+          <text x="342" y="35">B</text>
+          <text x="390" y="36" font-size="14">✕</text>
+          <text
+            x="4"
+            y="82"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Circular header list
+          </text>
+          <rect x="4" y="88" width="46" height="26" />
+          <text x="27" y="105" font-size="10">START</text>
+          <line class="a" x1="50" y1="101" x2="76" y2="101" />
+          <rect x="76" y="88" width="96" height="26" />
+          <line x1="136" y1="88" x2="136" y2="114" />
+          <text x="106" y="105">Header</text>
+          <circle cx="154" cy="101" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="101" x2="194" y2="101" />
+          <rect x="194" y="88" width="96" height="26" />
+          <line x1="254" y1="88" x2="254" y2="114" />
+          <text x="224" y="105">A</text>
+          <circle cx="272" cy="101" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="101" x2="312" y2="101" />
+          <rect x="312" y="88" width="96" height="26" />
+          <line x1="372" y1="88" x2="372" y2="114" />
+          <text x="342" y="105">B</text>
+          <circle cx="390" cy="101" r="3" style="fill: var(--a)" />
+          <polyline class="a" points="390,101 390,130 124,130 124,114" />
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Other variations</h2>
+      <div class="g">
+        <div class="c r">
+          <b>Circular list</b>: the last node points back to the first node
+          instead of containing the null pointer.
+        </div>
+        <div class="c r">
+          <b>Linked list with header and trailer node</b>: contains both a
+          special header node at the beginning and a special trailer node at the
+          end.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 600 140"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text
+            x="4"
+            y="12"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Circular list
+          </text>
+          <rect x="4" y="18" width="46" height="26" />
+          <text x="27" y="35" font-size="10">START</text>
+          <line class="a" x1="50" y1="31" x2="76" y2="31" />
+          <rect x="76" y="18" width="96" height="26" />
+          <line x1="136" y1="18" x2="136" y2="44" />
+          <text x="106" y="35">A</text>
+          <circle cx="154" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="31" x2="194" y2="31" />
+          <rect x="194" y="18" width="96" height="26" />
+          <line x1="254" y1="18" x2="254" y2="44" />
+          <text x="224" y="35">B</text>
+          <circle cx="272" cy="31" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="31" x2="312" y2="31" />
+          <rect x="312" y="18" width="96" height="26" />
+          <line x1="372" y1="18" x2="372" y2="44" />
+          <text x="342" y="35">C</text>
+          <circle cx="390" cy="31" r="3" style="fill: var(--a)" />
+          <polyline class="a" points="390,31 390,60 124,60 124,44" />
+          <text
+            x="4"
+            y="82"
+            font-size="11"
+            style="fill: var(--mut)"
+            text-anchor="start"
+          >
+            Header and trailer
+          </text>
+          <rect x="4" y="88" width="46" height="26" />
+          <text x="27" y="105" font-size="10">START</text>
+          <line class="a" x1="50" y1="101" x2="76" y2="101" />
+          <rect x="76" y="88" width="96" height="26" />
+          <line x1="136" y1="88" x2="136" y2="114" />
+          <text x="106" y="105">Header</text>
+          <circle cx="154" cy="101" r="3" style="fill: var(--a)" />
+          <line class="a" x1="154" y1="101" x2="194" y2="101" />
+          <rect x="194" y="88" width="96" height="26" />
+          <line x1="254" y1="88" x2="254" y2="114" />
+          <text x="224" y="105">A</text>
+          <circle cx="272" cy="101" r="3" style="fill: var(--a)" />
+          <line class="a" x1="272" y1="101" x2="312" y2="101" />
+          <rect x="312" y="88" width="96" height="26" />
+          <line x1="372" y1="88" x2="372" y2="114" />
+          <text x="342" y="105">B</text>
+          <circle cx="390" cy="101" r="3" style="fill: var(--a)" />
+          <line class="a" x1="390" y1="101" x2="430" y2="101" />
+          <rect x="430" y="88" width="96" height="26" />
+          <line x1="490" y1="88" x2="490" y2="114" />
+          <text x="460" y="105">Trailer</text>
+          <text x="508" y="106" font-size="14">✕</text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Two-way (doubly) linked list</h2>
+      <div class="g">
+        <div class="c r">
+          A link structure that can be traversed in two directions: forward
+          (beginning → end) and backward (end → beginning). A node N has
+          immediate access to both the next and the previous node — so N can be
+          deleted without traversing any part of the list.
+        </div>
+        <div class="c r">
+          A linear collection of nodes, each divided into three parts: (1)
+          <b>INFO</b> — data of N; (2) pointer field <b>FORW</b> — location of
+          the next node; (3) pointer field <b>BACK</b> — location of the
+          preceding node.
+        </div>
+        <div class="c r">
+          Two list pointer variables: <b>FIRST</b> (first node; sometimes START)
+          and <b>LAST</b> (last node; sometimes END). NULL pointers sit in the
+          FORW field of the last node and the BACK field of the first node.
+        </div>
+        <div class="c r">
+          FIRST + FORW traverse forward; LAST + BACK traverse backward.
+        </div>
+      </div>
+      <svg
+        class="r"
+        viewBox="0 0 640 100"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text x="85" y="14">FIRST</text>
+          <line class="a" x1="85" y1="18" x2="85" y2="34" />
+          <text x="385" y="14">LAST</text>
+          <line class="a" x1="385" y1="18" x2="385" y2="34" />
+          <rect x="20" y="36" width="130" height="30" />
+          <line x1="55" y1="36" x2="55" y2="66" />
+          <line x1="115" y1="36" x2="115" y2="66" />
+          <text x="85" y="55">A</text>
+          <text x="37" y="55">✕</text>
+          <circle cx="133" cy="44" r="3" style="fill: var(--a)" />
+          <line class="a" x1="133" y1="44" x2="168" y2="44" />
+          <rect x="170" y="36" width="130" height="30" />
+          <line x1="205" y1="36" x2="205" y2="66" />
+          <line x1="265" y1="36" x2="265" y2="66" />
+          <text x="235" y="55">B</text>
+          <circle cx="187" cy="58" r="3" style="fill: var(--b)" />
+          <circle cx="283" cy="44" r="3" style="fill: var(--a)" />
+          <line class="a" x1="187" y1="58" x2="148" y2="58" />
+          <line class="a" x1="283" y1="44" x2="318" y2="44" />
+          <rect x="320" y="36" width="130" height="30" />
+          <line x1="355" y1="36" x2="355" y2="66" />
+          <line x1="415" y1="36" x2="415" y2="66" />
+          <text x="385" y="55">C</text>
+          <circle cx="337" cy="58" r="3" style="fill: var(--b)" />
+          <text x="433" y="55">✕</text>
+          <line class="a" x1="337" y1="58" x2="298" y2="58" />
+          <text
+            x="10"
+            y="92"
+            font-size="11"
+            text-anchor="start"
+            style="fill: var(--mut)"
+          >
+            upper arrows = FORW (point to the next node) · lower arrows = BACK
+            (point to the previous node)
+          </text>
+        </g>
+      </svg>
+    </section>
+    <section class="s">
+      <h2 class="r">Example: hospital BED list</h2>
+      <p class="r">
+        BED stores patient names in an alphabetically sorted two-way list with
+        FORW and BACK; FIRST = 5, LAST = 9, AVAIL = 10. AVAIL follows FORW only
+        (a one-way list), so its BACK entries are blank.
+      </p>
+      <table class="r">
+        <tr>
+          <th>Index</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+          <th>11</th>
+          <th>12</th>
+        </tr>
+        <tr>
+          <td>BED</td>
+          <td>Kirk</td>
+          <td></td>
+          <td>Dean</td>
+          <td>Maxwell</td>
+          <td>Adams</td>
+          <td></td>
+          <td>Lane</td>
+          <td>Green</td>
+          <td>Samuels</td>
+          <td></td>
+          <td>Fields</td>
+          <td>Nelson</td>
+        </tr>
+        <tr>
+          <td>FORW</td>
+          <td>7</td>
+          <td>6</td>
+          <td>11</td>
+          <td>12</td>
+          <td>3</td>
+          <td>0</td>
+          <td>4</td>
+          <td>1</td>
+          <td>0</td>
+          <td>2</td>
+          <td>8</td>
+          <td>9</td>
+        </tr>
+        <tr>
+          <td>BACK</td>
+          <td>8</td>
+          <td></td>
+          <td>5</td>
+          <td>7</td>
+          <td>0</td>
+          <td></td>
+          <td>1</td>
+          <td>11</td>
+          <td>12</td>
+          <td></td>
+          <td>3</td>
+          <td>4</td>
+        </tr>
+      </table>
+      <p class="r m">
+        Order: Adams → Dean → Fields → Green → Kirk → Lane → Maxwell → Nelson →
+        Samuels.
+      </p>
+      <svg
+        class="r"
+        viewBox="0 0 400 306"
+        style="width: 100%; max-height: 46vh"
+      >
+        <g text-anchor="middle" font-size="12">
+          <text x="165" y="24" font-size="11">#</text>
+          <text x="230" y="24">BED</text>
+          <text x="305" y="24">FORW</text>
+          <text x="355" y="24">BACK</text>
+          <rect x="150" y="34" width="30" height="22" />
+          <text x="165" y="49" font-size="11">1</text>
+          <rect x="180" y="34" width="100" height="22" />
+          <text x="230" y="49">Kirk</text>
+          <rect x="280" y="34" width="50" height="22" />
+          <text x="305" y="49">7</text>
+          <rect x="330" y="34" width="50" height="22" />
+          <text x="355" y="49">8</text>
+          <rect x="150" y="56" width="30" height="22" />
+          <text x="165" y="71" font-size="11">2</text>
+          <rect x="180" y="56" width="100" height="22" />
+          <text x="230" y="71"></text>
+          <rect x="280" y="56" width="50" height="22" />
+          <text x="305" y="71">6</text>
+          <rect x="330" y="56" width="50" height="22" />
+          <text x="355" y="71"></text>
+          <rect x="150" y="78" width="30" height="22" />
+          <text x="165" y="93" font-size="11">3</text>
+          <rect x="180" y="78" width="100" height="22" />
+          <text x="230" y="93">Dean</text>
+          <rect x="280" y="78" width="50" height="22" />
+          <text x="305" y="93">11</text>
+          <rect x="330" y="78" width="50" height="22" />
+          <text x="355" y="93">5</text>
+          <rect x="150" y="100" width="30" height="22" />
+          <text x="165" y="115" font-size="11">4</text>
+          <rect x="180" y="100" width="100" height="22" />
+          <text x="230" y="115">Maxwell</text>
+          <rect x="280" y="100" width="50" height="22" />
+          <text x="305" y="115">12</text>
+          <rect x="330" y="100" width="50" height="22" />
+          <text x="355" y="115">7</text>
+          <rect x="150" y="122" width="30" height="22" />
+          <text x="165" y="137" font-size="11">5</text>
+          <rect x="180" y="122" width="100" height="22" />
+          <text x="230" y="137">Adams</text>
+          <rect x="280" y="122" width="50" height="22" />
+          <text x="305" y="137">3</text>
+          <rect x="330" y="122" width="50" height="22" />
+          <text x="355" y="137">0</text>
+          <rect x="150" y="144" width="30" height="22" />
+          <text x="165" y="159" font-size="11">6</text>
+          <rect x="180" y="144" width="100" height="22" />
+          <text x="230" y="159"></text>
+          <rect x="280" y="144" width="50" height="22" />
+          <text x="305" y="159">0</text>
+          <rect x="330" y="144" width="50" height="22" />
+          <text x="355" y="159"></text>
+          <rect x="150" y="166" width="30" height="22" />
+          <text x="165" y="181" font-size="11">7</text>
+          <rect x="180" y="166" width="100" height="22" />
+          <text x="230" y="181">Lane</text>
+          <rect x="280" y="166" width="50" height="22" />
+          <text x="305" y="181">4</text>
+          <rect x="330" y="166" width="50" height="22" />
+          <text x="355" y="181">1</text>
+          <rect x="150" y="188" width="30" height="22" />
+          <text x="165" y="203" font-size="11">8</text>
+          <rect x="180" y="188" width="100" height="22" />
+          <text x="230" y="203">Green</text>
+          <rect x="280" y="188" width="50" height="22" />
+          <text x="305" y="203">1</text>
+          <rect x="330" y="188" width="50" height="22" />
+          <text x="355" y="203">11</text>
+          <rect x="150" y="210" width="30" height="22" />
+          <text x="165" y="225" font-size="11">9</text>
+          <rect x="180" y="210" width="100" height="22" />
+          <text x="230" y="225">Samuels</text>
+          <rect x="280" y="210" width="50" height="22" />
+          <text x="305" y="225">0</text>
+          <rect x="330" y="210" width="50" height="22" />
+          <text x="355" y="225">12</text>
+          <rect x="150" y="232" width="30" height="22" />
+          <text x="165" y="247" font-size="11">10</text>
+          <rect x="180" y="232" width="100" height="22" />
+          <text x="230" y="247"></text>
+          <rect x="280" y="232" width="50" height="22" />
+          <text x="305" y="247">2</text>
+          <rect x="330" y="232" width="50" height="22" />
+          <text x="355" y="247"></text>
+          <rect x="150" y="254" width="30" height="22" />
+          <text x="165" y="269" font-size="11">11</text>
+          <rect x="180" y="254" width="100" height="22" />
+          <text x="230" y="269">Fields</text>
+          <rect x="280" y="254" width="50" height="22" />
+          <text x="305" y="269">8</text>
+          <rect x="330" y="254" width="50" height="22" />
+          <text x="355" y="269">3</text>
+          <rect x="150" y="276" width="30" height="22" />
+          <text x="165" y="291" font-size="11">12</text>
+          <rect x="180" y="276" width="100" height="22" />
+          <text x="230" y="291">Nelson</text>
+          <rect x="280" y="276" width="50" height="22" />
+          <text x="305" y="291">9</text>
+          <rect x="330" y="276" width="50" height="22" />
+          <text x="355" y="291">4</text>
+          <rect
+            x="10"
+            y="122"
+            width="80"
+            height="22"
+            style="fill: var(--b); stroke: var(--b)"
+          />
+          <text x="50" y="137">FIRST = 5</text>
+          <line class="a" x1="90" y1="133" x2="148" y2="133" />
+          <rect
+            x="10"
+            y="210"
+            width="80"
+            height="22"
+            style="fill: var(--b); stroke: var(--b)"
+          />
+          <text x="50" y="225">LAST = 9</text>
+          <line class="a" x1="90" y1="221" x2="148" y2="221" />
+          <rect
+            x="10"
+            y="232"
+            width="80"
+            height="22"
+            style="fill: var(--b); stroke: var(--b)"
+          />
+          <text x="50" y="247">AVAIL = 10</text>
+          <line class="a" x1="90" y1="243" x2="148" y2="243" />
+        </g>
+      </svg>
+    </section>
+    <script>
+      const S = [...document.querySelectorAll(".s")],
+        N = S.length,
+        $ = (id) => document.getElementById(id);
+      let i = 0;
+      function go(n) {
+        n = Math.max(0, Math.min(N - 1, n));
+        S.forEach((s, k) => {
+          s.classList.toggle("on", k == n);
+          s.classList.toggle("pv", k < n);
+          if (k == n)
+            s.querySelectorAll(".r").forEach(
+              (e, j) => (e.style.transitionDelay = 0.1 + j * 0.09 + "s"),
+            );
+        });
+        i = n;
+        $("bar").style.width = ((n + 1) / N) * 100 + "%";
+        $("cnt").textContent = n + 1 + "/" + N;
+        try {
+          history.replaceState(null, "", "#" + (n + 1));
+        } catch (e) {}
+      }
+      addEventListener("keydown", (e) => {
+        if (/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+        const k = e.key;
+        if (k == " " && e.target.tagName == "BUTTON") return;
+        if (
+          k == "ArrowRight" ||
+          k == " " ||
+          k == "PageDown" ||
+          k == "ArrowDown"
+        )
+          go(i + 1);
+        else if (k == "ArrowLeft" || k == "PageUp" || k == "ArrowUp") go(i - 1);
+        else if (k == "Home") go(0);
+        else if (k == "End") go(N - 1);
+        else if (k == "o" && O >= 0) go(O);
+        else if (k == "f") {
+          document.fullscreenElement
+            ? document.exitFullscreen()
+            : document.documentElement.requestFullscreen &&
+              document.documentElement.requestFullscreen();
+        }
+      });
+      let x0;
+      addEventListener("touchstart", (e) => (x0 = e.touches[0].clientX), {
+        passive: true,
+      });
+      addEventListener("touchend", (e) => {
+        if (/INPUT|TEXTAREA|BUTTON/.test(e.target.tagName)) return;
+        const d = e.changedTouches[0].clientX - x0;
+        if (Math.abs(d) > 60) go(i + (d < 0 ? 1 : -1));
+      });
+      const O = S.findIndex((s) => s.id == "overview");
+      if (O < 0) $("ov").style.display = "none";
+      else $("ov").onclick = () => go(O);
+      $("pv").onclick = () => go(i - 1);
+      $("nx").onclick = () => go(i + 1);
+      $("th").onclick = () => {
+        const r = document.documentElement,
+          d = r.dataset.theme
+            ? r.dataset.theme == "dark"
+            : matchMedia("(prefers-color-scheme:dark)").matches;
+        r.dataset.theme = d ? "light" : "dark";
+      };
+      function fit(s) {
+        s.style.fontSize = "";
+        let f = parseFloat(getComputedStyle(s).fontSize);
+        while (s.scrollHeight > s.clientHeight + 2 && f > 12) {
+          f -= 0.5;
+          s.style.fontSize = f + "px";
+        }
+      }
+      function fitAll() {
+        S.forEach(fit);
+      }
+      addEventListener("resize", fitAll);
+      go((parseInt(location.hash.slice(1)) || 1) - 1);
+    </script>
+    <script>
+      const A = [2, 5, 8, 12, 16, 23, 38, 45, 56, 72, 91];
+      let L, R, F, C;
+      function bsDraw(s, m) {
+        $("bsa").innerHTML = A.map(
+          (v, k) =>
+            '<span class="ch' +
+            (k == m ? " m" : k < L || k > R ? " z" : "") +
+            '">' +
+            v +
+            "<br><small>" +
+            (k + 1) +
+            "</small></span>",
+        ).join("");
+        $("bsm").textContent = s;
+      }
+      function bsInit() {
+        L = 0;
+        R = A.length - 1;
+        F = -1;
+        C = 0;
+        bsDraw("Target " + $("bt").value + " — press Step");
+      }
+      function bsStep() {
+        const t = +$("bt").value;
+        if (F >= 0 || L > R) return bsInit();
+        const m = (L + R) >> 1;
+        C++;
+        let s = "MID=" + (m + 1) + " → " + A[m] + " ";
+        if (A[m] == t) {
+          F = m;
+          s +=
+            "= target. Found at position " + (m + 1) + " in " + C + " step(s)";
+        } else if (t < A[m]) {
+          R = m - 1;
+          s += "> target → END=MID−1";
+        } else {
+          L = m + 1;
+          s += "< target → BEG=MID+1";
+        }
+        if (F < 0 && L > R) s += ". BEG>END: not found";
+        bsDraw(s, m);
+      }
+      function loc() {
+        const v = ["b1", "b2", "b3", "b4"].map((x) => +$(x).value);
+        $("lo").textContent = "LOC = " + (v[0] + v[1] * (v[3] - v[2]));
+      }
+      ["b1", "b2", "b3", "b4"].forEach((x) => ($(x).oninput = loc));
+      loc();
+      bsInit();
+
+      let K, CM, done;
+      function pmDraw(m, kk, l) {
+        const T = $("pt").value,
+          P = $("pp").value,
+          R = P.length;
+        $("pa").innerHTML =
+          [...T]
+            .map((c, j) => {
+              let z = "";
+              if (kk > 0 && j >= kk - 1 && j < kk - 1 + R) {
+                const q = j - (kk - 1) + 1;
+                z = l == 0 || q < l ? " m" : q == l ? " h" : " z";
+              }
+              return '<span class="ch' + z + '">' + c + "</span>";
+            })
+            .join("") +
+          "<br>" +
+          (kk > 0
+            ? '<span class="ch" style="visibility:hidden">x</span>'.repeat(
+                kk - 1,
+              ) +
+              [...P].map((c) => '<span class="ch">' + c + "</span>").join("")
+            : "");
+        $("pm").textContent = m;
+      }
+      function pmInit() {
+        K = 1;
+        CM = 0;
+        done = 0;
+        pmDraw("Window k=1 — press Step", -1, 0);
+      }
+      function pmStep() {
+        const T = $("pt").value,
+          P = $("pp").value,
+          R = P.length,
+          mx = T.length - R + 1;
+        if (done || K > mx || R < 1) return pmInit();
+        let l = 0;
+        while (l < R) {
+          CM++;
+          if (P[l] != T[K - 1 + l]) break;
+          l++;
+        }
+        if (l == R) {
+          done = 1;
+          pmDraw(
+            "k=" +
+              K +
+              ": all " +
+              R +
+              " match → INDEX=" +
+              K +
+              " (" +
+              CM +
+              " comparisons)",
+            K,
+            0,
+          );
+        } else {
+          pmDraw(
+            "k=" +
+              K +
+              ": mismatch at pattern char " +
+              (l + 1) +
+              " (" +
+              CM +
+              " comparisons so far)",
+            K,
+            l + 1,
+          );
+          K++;
+          if (K > mx) {
+            done = 1;
+            $("pm").textContent += " → INDEX=0 (not found)";
+          }
+        }
+      }
+      let LS = [10, 20, 40],
+        CAP = 8;
+      function lsDraw(m) {
+        $("ll").innerHTML =
+          '<span class="m">START →</span> ' +
+          LS.map(
+            (v, k) =>
+              '<span class="ch" style="cursor:pointer" onclick="lsDel(' +
+              k +
+              ')">' +
+              v +
+              "</span> →",
+          ).join(" ") +
+          " <b>X</b>";
+        $("lm").textContent = m || "AVAIL cells free: " + (CAP - LS.length);
+      }
+      function lsIns() {
+        const s = $("lv").value,
+          v = +s;
+        if (s === "" || isNaN(v)) return;
+        if (LS.length >= CAP) return lsDraw("OVERFLOW (AVAIL = NULL)");
+        let k = LS.findIndex((x) => v < x);
+        if (k < 0) k = LS.length;
+        LS.splice(k, 0, v);
+        lsDraw(
+          "Inserted " +
+            v +
+            " at position " +
+            (k + 1) +
+            " (node taken from AVAIL). Free: " +
+            (CAP - LS.length),
+        );
+      }
+      function lsDel(k) {
+        const v = LS.splice(k, 1);
+        lsDraw(
+          "Deleted " +
+            v +
+            " → node returned to AVAIL. Free: " +
+            (CAP - LS.length),
+        );
+      }
+      function lsPop() {
+        if (!LS.length) return lsDraw("UNDERFLOW (START = NULL)");
+        lsDel(0);
+      }
+      pmInit();
+      lsDraw();
+
+      fitAll();
+    </script>
+  </body>
+</html>
