@@ -1,0 +1,20 @@
+/* #role{
+        color: black;
+        background-color:aquamarine;
+        height: auto;
+        width: auto;
+        align-content: center;
+} */
+.myP{
+    color: rgb(0, 255, 234);
+    height: auto;
+    width: auto;
+    align-content: center;
+}
+.newP{
+    background-color: rgb(0, 255, 21);
+    height: auto;
+    width: auto;
+    align-content: center;
+}
+

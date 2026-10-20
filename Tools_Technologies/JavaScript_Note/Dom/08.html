@@ -1,0 +1,34 @@
+<!-- Events-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <link rel="stylesheet" href="08.css">
+</head>
+<body>
+    <!-- <button onclick = "alert('Button was clicked');"> Click Me! </button>  -->
+    <!-- here onclick is an event and also an attribute of the button element. When the button is clicked,
+    the event is fired and the code inside the onclick attribute is executed. This is an example of event handling. -->
+
+    <button ondblclick = "alert('Button was double clicked');"> Double Click Me! </button>
+    <!-- here ondblclick is an event and also an attribute of the button element. When the button is clicked once the event is not
+    fired but when the button is double clicked, the event is fired and the code inside the ondblclick attribute is executed. -->
+
+    <div onmouseover="alert('Inside box');"> This is a box </div>
+    <!-- here onmouseover is an event and also an attribute of the div element. This is a mouse event. When the mouse hovers over
+    the div element, the event is fired and the code inside the onmouseover attribute is executed. -->
+
+    <!-- These 3 examples are of inline event handling. The event is handled inside the HTML element itself. This is not a good 
+    practice as it mixes the HTML and JavaScript code together. It is better to separate the JavaScript code from the HTML code.
+    So we use node.event=()=>{
+                        \\handler code}; 
+    lets see one example as 1st examples alternative.(thats why commented 1st example and then go to 08.js) -->
+    <button id="clickMe"> Click Me! </button>
+
+    <button id="mode"> Toggle </button>
+    <script src="08.js"></script>
+</body>
+</html>
