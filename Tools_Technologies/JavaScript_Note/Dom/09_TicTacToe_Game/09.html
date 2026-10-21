@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <link rel="stylesheet" href="09.css"/>
+</head>
+<body>
+
+    <div class="msg-container hide">
+        <!-- added hide class to hide the message container when the game starts. The message container will be shown 
+        when a player wins the game. -->
+        <p class="msg">Winner!</p>
+        <button class="new-game">New Game</button>
+    </div>
+
+    <main>
+    <h1>Tic-Tac-Toe</h1>
+    <p>Welcome to the Tic Tac Toe Game!</p>
+        <div class="container">
+            <div class="box">
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+                <button class="cell"></button>
+            </div>
+        </div>
+    <button id="reset">Reset</button>
+    </main>
+
+    <script src="09.js"></script>
+</body>
+</html>
+
+<!-- Tic Tac Toe Basics:
+    A 3X3 box has 9 cells from 0 to 8.  0|1|2
+                                        3|4|5
+                                        6|7|8 
+    There is two player with one having input symbol X and the other having input symbol O.
+    If theree cells in a row, column, or diagonal are the same symbol, that player wins. 
+    so we can say the winning pattern is: [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] .
+    Now let's think about design of the box 1st we need to create a box or grid structure using div elements. Then 
+    we can normally use div elements to create the cells. But we can also use button elements to create the cells. 
+    The advantage of using button elements is that we can easily add click event listeners to them.
+    -->

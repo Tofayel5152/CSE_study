@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #548687;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* here we have given 70% of our view hight of web page to the container and 60% of view 
+hight to the box and divided the 60% into 3 parts for 3 rows and got 20% each. And gave 
+18% of view hight to the cell. */
+
+.container {
+    height: 70vh;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.box{
+    height: 60vmin;
+    width: 60vmin; /*need to give width same to make it square*/
+    display: flex; /* to make the cells in same style. */
+    flex-wrap: wrap; /* to make the cells go to next line when the row is filled. */
+    justify-content: center; /* to make the cells in center of the box. */
+    align-items: center; /* to make the cells in center of the box. */
+    gap: 1.5vmin; /* to give some space between the cells. */
+}
+
+.cell {
+    height: 18vmin;
+    width: 18vmin; /*need to give width same to make it square*/
+    border-radius: 1rem; /* to make the cells rounded. */
+    border: none; /* to remove the border of the cells. */
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4); /* to give some shadow to the cells and gave 0.2 opacity to the shadow to make it look little light. */
+    font-size: 9vmin; /* to make the font size of the cells responsive. */
+    color: #b0413e; /* to give the color of the cells. */
+    background-color: #ffffc7; /* to give the background color of the cells. */
+}
+
+#reset{
+    padding: 1rem 2rem; /* to give some padding to the button to make the button big. */
+    font-size: 1.5rem; /* to make the font size of the button responsive. */
+    background-color: #191913; /* to give the background color of the button. */
+    color: #fff; /* to give the color of the button. */
+    border-radius: 1rem; /* to make the button rounded. */
+    border: none; /* to remove the border of the button. */
+}
+
+.new-game{
+    padding: 1rem; /* to give some padding to the button to make the button big. */
+    font-size: 1.5rem; /* to make the font size of the button responsive. */
+    background-color: #191913; /* to give the background color of the button. */
+    color: #fff; /* to give the color of the button. */
+    border-radius: 1rem; /* to make the button rounded. */
+    border: none; /* to remove the border of the button. */
+}
+
+.msg-container {
+    margin-bottom: 1rem;
+}
+
+.msg{
+    color: #ffffc9; /* to give the color of the message. */
+    font-size: 3rem; /* to make the font size of the message responsive. */
+}
+
+.hide{
+    display: none; /* to hide the message. */
+}
