@@ -1,0 +1,70 @@
+* {
+    margin: 0;
+    padding: 0; /* sets the margin and padding of all elements to 0. What it does 
+    is remove the default spacing and padding that browsers apply to elements. */
+    text-align: center; /* make the text centered corresponding to width of the page */
+}
+
+h1 {
+    background-color: #081b31;
+    color: #fff;
+    height: 5rem;
+    text-align: center; /* make the text centered corresponding to width */
+    line-height: 5rem; /* make the text vertically centered in his own line or box */
+}
+
+.choice {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+.choice:hover {
+    opacity: 0.5; /* make the image transparent when hovered */
+    cursor: pointer; /* make the cursor a pointer when hovered */
+    background-color: #081b31; 
+}
+
+img {
+    height: 190px;
+    width: 190px;
+    object-fit: cover; /* make the image fit in the box without stretching it */
+    border-radius: 50%; /* make the image round */
+}
+
+.choices {
+    display: flex; /* make the choices in a row */
+    justify-content: center; /* make the choices centered corresponding to the width of the container */
+    align-items: center; /* make the choices vertically centered in the container */
+    gap: 3rem; /* make the gap between the choices */
+    margin-top: 5rem; /* make the gap between the choices and the top of the container */
+    margin-bottom: 5rem; /* make the gap between the choices and the bottom of the container */
+}
+
+.score-board {
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    gap: 5rem;
+}
+
+#player-score,#computer-score {
+    font-size: 5rem;
+    color: #0199ff;
+}
+
+.msg-container {
+    margin-top: 5rem;
+    font-size: 2rem;
+    background-color: #081b31;
+    color: #fff;
+    height: 3rem;
+    display: inline-flex; /* make the container inline so that it doesn't take the full width of the page */
+    border-radius: 1rem; /* make the container rounded */
+    padding: 0 2rem; /* make the text not touch the edges of the container here 0 from height and 2 from width */
+    text-align: center; /* make the text centered corresponding to width of the container */
+    line-height: 3rem; /* make the text vertically centered in the container */
+}
